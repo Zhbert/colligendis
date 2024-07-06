@@ -1,0 +1,54 @@
+\documentclass[a4paper]{article}
+\usepackage[10pt]{extsizes} % для того чтобы задать нестандартный 14-ый размер шрифта
+\usepackage[utf8]{inputenc}
+\usepackage[english, russian]{babel}
+\usepackage{setspace,amsmath}
+\usepackage{epigraph} % для эпиграфов и продвинутых цитат
+\usepackage{csquotes} % ещё одна штука для цитат
+\usepackage[unicode, pdftex]{hyperref} % подключаем hyperref (для ссылок внутри  pdf)
+\hypersetup{
+    colorlinks,
+    citecolor=black,
+    filecolor=black,
+    linkcolor=blue,
+    urlcolor=black
+}
+\usepackage{amssymb} % в том числе для красивого знака пустого множества
+\usepackage{amsthm} % в т.ч. для оформления доказательств
+\usepackage[left=10mm, top=10mm, right=10mm, bottom=15mm, footskip=7mm]{geometry} % настройки полей документа
+\usepackage[active]{srcltx}
+\usepackage{indentfirst}
+\usepackage{listings}
+\usepackage{float}
+\usepackage{longtable}
+\usepackage{tocloft}
+\usepackage{misccorr}
+\usepackage{graphicx}
+\usepackage{caption}
+\usepackage{tabularx}
+\usepackage{tabularx}
+\usepackage{tabu}
+\usepackage{threeparttable}
+\usepackage{multirow}
+\usepackage{array}
+\usepackage{pbox}
+\usepackage{longtable}
+\usepackage[style=numeric,sorting=none]{biblatex}
+\DeclareCaptionLabelSeparator{defffis}{ --- }
+\captionsetup{justification=centering,labelsep=defffis}
+\graphicspath{{images/}}
+\DeclareGraphicsExtensions{.jpg}
+\renewcommand{\cftsecleader}{\cftdotfill{\cftsubsecdotsep}}
+\newcommand{\ran}{{\rm ran}\,}
+\newcommand{\diag}{{\rm diag}\,}
+% переименовываем  список литературы в "список используемой литературы"
+\addto\captionsrussian{\def\refname{Список используемой литературы}}
+\addto\captionsrussian{\renewcommand\listfigurename{Список рисунков}}
+\newcounter{totreferences}
+\pretocmd{\bibitem}{\addtocounter{totreferences}{1}}{}{}
+\newtheorem{theorem}{Теорема} % задаём выводимое слово (для теорем)
+\newtheorem{definition}{Опредление} % задаём выводимое слово (для определений)
+% объявляем новые команды
+\newcommand{\RNumb}[1]{\uppercase\expandafter{\romannumeral #1\relax}}
+
+\makeindex

@@ -1,0 +1,101 @@
+\input{preamble}
+
+\begin{document} % начало документа
+    \begin{center}
+        {{ if .PreviousDate }}
+        \large{\textbf{Статистика за период c {{ .PreviousDate }} по {{ .LatestDate }} }}
+        {{ else }}
+        \large{\textbf{Статистика за {{ .LatestDate }} }}
+        {{ end }}
+    \end{center}
+    \begin{flushright}
+        сгенерировано утилитой colligendis
+    \end{flushright}
+    \tableofcontents
+    \section{Блог на Хабре}
+        \subsection{Краткая статистика}
+            \begin{itemize}
+              \setlength{\itemsep}{-2mm}
+              \item Просмотров за период: \textbf{ {{ .AllViewsCount }} }
+              \item Всего статей в блоге: {{ .ArticlesCount }}
+              \item Опубликовано статей за эту неделю: {{ .CountOfLastArticles }}
+              \item Всего авторов: {{ .AuthorsCount }}
+            \end{itemize}
+        {{ if .LatestArticlesFromWeek }}
+        \subsubsection{Опубликованные на этой неделе статьи}
+            \begin{table}[H]
+            \begin{threeparttable}
+            \begin{tabularx}{\textwidth}{|X|l|l|}
+            \hline
+            \textbf{Название статьи} & \textbf{Дата публикации} &  \textbf{Кол-во просмотров} \\ \hline
+            {{ range .LatestArticlesFromWeek }}
+            {{ .Name }} & {{ .Date.Format "2006-01-02" }} & {{ .Growth }} \\ \hline
+            {{ end }}
+            \end{tabularx}
+            \caption{Статьи, опубликованные на этой неделе}
+            \end{threeparttable}
+            \end{table}
+        {{ end }}
+        \subsubsection{Топ-5 популярных статей за неделю (по просмотрам)}
+            \begin{table}[H]
+            \begin{threeparttable}
+            \begin{tabularx}{\textwidth}{|X|l|l|}
+            \hline
+            \textbf{Название статьи} & \textbf{Дата публикации} &  \textbf{Кол-во просмотров} \\ \hline
+            {{ range .AllArticlesPerWeek }}
+            {{ .Name }} & {{ .Date.Format "2006-01-02" }} & {{ .Growth }} \\ \hline
+            {{ end }}
+            \end{tabularx}
+            \caption{Топ-5 популярных статей за неделю (по просмотрам)}
+            \end{threeparttable}
+            \end{table}
+        \subsubsection{Топ-5 статей за весь период}
+            \begin{table}[H]
+            \begin{threeparttable}
+            \begin{tabularx}{\textwidth}{|X|l|l|}
+            \hline
+            \textbf{Название статьи} & \textbf{Дата публикации} &  \textbf{Кол-во просмотров} \\ \hline
+            {{ range .AllArticlesGlobalWithLimit }}
+            {{ .Name }} & {{ .Date.Format "2006-01-02" }} & {{ .Views }} \\ \hline
+            {{ end }}
+            \end{tabularx}
+            \caption{Топ-5 популярных статей за весь период (по просмотрам)}
+            \end{threeparttable}
+            \end{table}
+        \subsubsection{Топ-5 авторов за все время}
+            \begin{table}[H]
+            \begin{threeparttable}
+            \begin{tabularx}{\textwidth}{|X|l|l|}
+            \hline
+            \textbf{Никнейм} & \textbf{Количество статей} \\ \hline
+            {{ range .AuthorsTopGlobal }}
+            {{ .Name }} & {{ .ArticlesCount }} \\ \hline
+            {{ end }}
+            \end{tabularx}
+            \caption{Топ-5 авторов за все время}
+            \end{threeparttable}
+            \end{table}
+    \subsection{Статистика глобальная}
+        \subsubsection{Все статьи в блоге}
+            Отсортировано по количеству просмотров за неделю.
+             \begin{longtable}{|p{0.60\textwidth}|*{3}{p{0.10\textwidth}|}}
+             \hline
+             \textbf{Название статьи} & \textbf{Дата публикации} &  \textbf{Общее кол-во просмотров} & \textbf{Кол-во просмотров за неделю} \\ \hline
+             \hline \endfirsthead
+             {{ range .AllArticlesGlobal }}
+             {{ .Name }} & {{ .Date.Format "2006-01-02" }} & {{ .Views }} & {{ .Growth }} \\ \hline
+             {{ end }}
+             \caption{Все статьи в блоге}
+             \end{longtable}
+        \subsubsection{Все авторы блога}
+        Отсортированы по имени.
+             \begin{longtable}{|p{0.65\textwidth}|p{0.25\textwidth}|}
+             \hline
+             \textbf{Имя автора} & \textbf{Количество статей} \\ \hline
+             \hline \endfirsthead
+             {{ range .Authors }}
+             {{ .Name }} & {{ .ArticlesCount }} \\ \hline
+             {{ end }}
+             \caption{Все авторы блога}
+             \end{longtable}
+\end{document}
