@@ -11,7 +11,9 @@ colligendis — CLI-utility for collecting and processing statistics from variou
 Supported resources:
 - [habr.com](https://habr.com) (for a corporate blog)
 
-Documentation: [RU](./docs/docs_ru.md), EN (in progress).
+**Dependencies**: LaTeX is used to generate statistics in PDF, it must be installed in the system. 
+
+To get started, read the documentation: [RU](./docs/ru/docs.md), EN (in progress).
 
 It is currently under active development.
 
