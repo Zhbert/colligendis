@@ -1,14 +1,16 @@
 # Основные команды
 
-* `collect`     Собирает 
-  *     `--all`           Starts the collection of statistics from all resources
-  *     `--file`          Generate PDF file
-  * `-f`, `--full`          Show full statistic
-  *     `--github`        Starts the collection of statistics from GitHub resources
-  *     `--habr`          Starts the collection of statistics from Habr
-  * `-h`, `--help`          help for collect
-  * `-l`, `--limit int`     Limit of table items
-  * `-s`, `--sort string`   Output sorting filter
+* `collect`     Собирает статистику
+  * `--all`                 Собирает статистику со всех ресурсов
+  * `--file`                Генерирует PDF-файл
+  * `-f`, `--full`          Отображает полную статистику
+  * `--github`              Отображает статистику с  GitHub _(в работе)_
+  * `--habr`                Отображает статистику с Хабра
+  * `-h`, `--help`          Отображает справку
+  * `-l`, `--limit int`     Задает лимит строчек в таблице в терминале при отображении статистики
+  * `-s`, `--sort string`   Задает сортировку отображения
+    * `name` - сортировка по имени
+    * `date` - сортировка по дате
 * `completion`  Генерирует скрипт автодополнения для bash
 * `config`      Работа с файлом конфигурации _(в работе)_
 * `help`        Вывод справки по любой команде
