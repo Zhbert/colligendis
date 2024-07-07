@@ -81,9 +81,19 @@ Use "colligendis [command] --help" for more information about a command.
 
 Просмотреть количество просмотров всех статей за предыдущий период можно командой:
 ```shell
-$ ./colligendis collect --habr
+$ colligendis collect --habr
 2024/07/07 11:31:52 Total habr views: 36197
 ```
+
+Просмотреть подробную статистику по статьям с приростом просмотров по каждой статье можно так:
+```shell
+colligendis collect --habr -f
+```
+В результате будет отобажена таблица с полной статистикой по статьям:
+
+<p align="center">
+  <img src="../images/habr-all-stats.png">
+</p>
 
 ## Генерация статистики в PDF
 
