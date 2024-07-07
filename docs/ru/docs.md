@@ -95,6 +95,16 @@ colligendis collect --habr -f
   <img src="../images/habr-all-stats.png">
 </p>
 
+Сократить выдачу по количеству строк в таблице можно ключом `-l`:
+```shell
+colligendis collect --habr -f -l 5
+```
+В примере выше количество строку выдаче сокращено до 5:
+
+<p align="center">
+  <img src="../images/habr-all-stats-limit.png">
+</p>
+
 ## Генерация статистики в PDF
 
 Для генерации в PDF используется LaTeX, он должен быть установлен в системе. Например, сгенерировать статистику по Хабру можно командой `colligendis collect --habr --file`. Если все пройдет успешно, в $PWD или рядом с исполняемым файлом появится PDF-файл stats.pdf с подробной статистикой по блогу.
