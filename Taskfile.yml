@@ -1,0 +1,34 @@
+version: '3'
+
+vars:
+  VERSION: "v0.1.0-alpha"
+
+tasks:
+  prepare:
+    desc: "Create folder for results of building"
+    cmds:
+      - mkdir result
+      - mkdir temp
+  build-all:
+    cmds:
+      - task prepare
+  build:
+    desc: "Build for the current platform"
+    cmds:
+      - go build .
+  build-linux-amd64:
+    desc: "Build for linux/amd64 platform"
+    cmds:
+      - |
+        task prepare
+        GOOS="linux" GOARCH="amd64" go build -o temp/colligendis
+        cd temp
+        tar -czf ../colligendis-{{.VERSION}}.tar.gz
+  clean:
+    deck: "Clean files and folders"
+    cmds:
+      - |
+        rm -rf ./temp
+        rm -rf ./results
+        
+      
