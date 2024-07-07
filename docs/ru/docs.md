@@ -99,11 +99,21 @@ colligendis collect --habr -f
 ```shell
 colligendis collect --habr -f -l 5
 ```
-В примере выше количество строку выдаче сокращено до 5:
+В примере выше количество строк в выдаче сокращено до 5:
 
 <p align="center">
   <img src="../images/habr-all-stats-limit.png">
 </p>
+
+Выдачу можно отсортировать по количеству просмотров за неделю:
+```shell
+colligendis collect --habr -f -l 5 -s views
+```
+
+<p align="center">
+  <img src="../images/habr-all-stats-sorted.png">
+</p>
+
 
 ## Генерация статистики в PDF
 
