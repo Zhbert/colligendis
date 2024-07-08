@@ -76,5 +76,4 @@ tasks:
     cmds:
       - |
         rm -rf ./result
-        
-      
+  
