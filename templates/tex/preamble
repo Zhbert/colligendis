@@ -11,7 +11,7 @@
     citecolor=black,
     filecolor=black,
     linkcolor=blue,
-    urlcolor=black
+    urlcolor=blue
 }
 \usepackage{amssymb} % в том числе для красивого знака пустого множества
 \usepackage{amsthm} % в т.ч. для оформления доказательств
