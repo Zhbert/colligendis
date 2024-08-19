@@ -25,6 +25,7 @@ import (
 	"colligendis/cmd/common"
 	"colligendis/internal/common/structs"
 	"colligendis/internal/common/text"
+	"colligendis/internal/date_service"
 	"colligendis/internal/db_service/domain"
 	"errors"
 	"gorm.io/driver/sqlite"
@@ -356,6 +357,7 @@ func GetArticlesFormLastPeriod(dt time.Time, getAll bool, global bool) (int, []s
 			stat.Name = text.CleanText(a.Name)
 			stat.Date = a.DateOfPublication
 			stat.Author = getAuthorByID(a.Author.ID)
+			stat.DayBefore = date_service.GetDaysBefore(a.DateOfPublication, time.Now())
 			if len(stats) > 1 {
 				stat.Views = stats[1].Views
 				stat.Growth = stats[1].Views - stats[0].Views

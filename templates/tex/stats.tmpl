@@ -26,13 +26,14 @@
         \subsubsection{Опубликованные на этой неделе статьи}
             \begin{table}[H]
             \begin{threeparttable}
-            \begin{tabularx}{\textwidth}{|X|l|l|l|}
+            \begin{tabularx}{\textwidth}{|X|l|l|l|l|}
             \hline
-            \textbf{Название статьи} & \textbf{Автор} & \textbf{Дата публикации} &  \textbf{Кол-во просмотров} \\ \hline
+            \textbf{Название статьи} & \textbf{Автор} & \textbf{Дата публикации} & \textbf{Дней назад*} & \textbf{Кол-во просмотров} \\ \hline
             {{ range .LatestArticlesFromWeek }}
-            {{ .Name }} & {{ .Author.Name }} & {{ .Date.Format "2006-01-02" }} & {{ .Growth }} \\ \hline
+            {{ .Name }} & {{ .Author.Name }} & {{ .Date.Format "2006-01-02" }} & {{ .DayBefore }} & {{ .Growth }} \\ \hline
             {{ end }}
             \end{tabularx}
+            \notebox{\textbf{*} — с даты генерации страницы. \newline Дата генерации страницы может отличаться от даты последней загрузки статистики в БД.}
             \caption{Статьи, опубликованные на этой неделе}
             \end{threeparttable}
             \end{table}
