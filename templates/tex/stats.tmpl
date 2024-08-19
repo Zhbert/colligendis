@@ -26,11 +26,11 @@
         \subsubsection{Опубликованные на этой неделе статьи}
             \begin{table}[H]
             \begin{threeparttable}
-            \begin{tabularx}{\textwidth}{|X|l|l|}
+            \begin{tabularx}{\textwidth}{|X|l|l|l|}
             \hline
-            \textbf{Название статьи} & \textbf{Дата публикации} &  \textbf{Кол-во просмотров} \\ \hline
+            \textbf{Название статьи} & \textbf{Автор} & \textbf{Дата публикации} &  \textbf{Кол-во просмотров} \\ \hline
             {{ range .LatestArticlesFromWeek }}
-            {{ .Name }} & {{ .Date.Format "2006-01-02" }} & {{ .Growth }} \\ \hline
+            {{ .Name }} & {{ .Author.Name }} & {{ .Date.Format "2006-01-02" }} & {{ .Growth }} \\ \hline
             {{ end }}
             \end{tabularx}
             \caption{Статьи, опубликованные на этой неделе}

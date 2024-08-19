@@ -22,6 +22,7 @@
 package structs
 
 import (
+	"colligendis/internal/db_service/domain"
 	"time"
 )
 
@@ -51,6 +52,7 @@ type StatsArticle struct {
 	Date   time.Time
 	Views  int
 	Growth int
+	Author domain.HabrAuthor
 }
 
 type TemplateStruct struct {
