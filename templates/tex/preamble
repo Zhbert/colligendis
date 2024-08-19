@@ -18,6 +18,7 @@
 \usepackage[left=10mm, top=10mm, right=10mm, bottom=15mm, footskip=7mm]{geometry} % настройки полей документа
 \usepackage[active]{srcltx}
 \usepackage{indentfirst}
+\usepackage{awesomebox}
 \usepackage{listings}
 \usepackage{float}
 \usepackage{longtable}

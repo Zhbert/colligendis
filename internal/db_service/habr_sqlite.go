@@ -25,6 +25,7 @@ import (
 	"colligendis/cmd/common"
 	"colligendis/internal/common/structs"
 	"colligendis/internal/common/text"
+	"colligendis/internal/date_service"
 	"colligendis/internal/db_service/domain"
 	"errors"
 	"gorm.io/driver/sqlite"
@@ -133,6 +134,22 @@ func getAuthor(db *gorm.DB, name string, flags *common.ColligendisFlags) domain.
 	} else {
 		return author
 	}
+}
+
+func getAuthorByID(id uint) domain.HabrAuthor {
+	var author domain.HabrAuthor
+
+	db, err := gorm.Open(sqlite.Open("colligendis.db"),
+		&gorm.Config{Logger: logger.Default.LogMode(getLogger())})
+	if err != nil {
+		log.Fatal("Error opening db!")
+	} else {
+		result := db.Where("id = ?", id).First(&author)
+		if errors.Is(result.Error, gorm.ErrRecordNotFound) {
+			log.Println("There is no such author")
+		}
+	}
+	return author
 }
 
 func getHubs(db *gorm.DB, hubs []string, flags *common.ColligendisFlags) []domain.HabrHub {
@@ -339,6 +356,8 @@ func GetArticlesFormLastPeriod(dt time.Time, getAll bool, global bool) (int, []s
 			stat.Id = i
 			stat.Name = text.CleanText(a.Name)
 			stat.Date = a.DateOfPublication
+			stat.Author = getAuthorByID(a.Author.ID)
+			stat.DayBefore = date_service.GetDaysBefore(a.DateOfPublication, time.Now())
 			if len(stats) > 1 {
 				stat.Views = stats[1].Views
 				stat.Growth = stats[1].Views - stats[0].Views
