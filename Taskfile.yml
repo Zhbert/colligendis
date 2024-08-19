@@ -1,7 +1,7 @@
 version: '3'
 
 vars:
-  VERSION: "v0.1.0-alpha"
+  VERSION: "v0.2.0"
 
 tasks:
   prepare:
