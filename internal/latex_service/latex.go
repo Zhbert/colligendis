@@ -17,6 +17,7 @@ import (
 func GenerateLaTeXFiles(tmpls []structs.TemplateStruct, flags *common.ColligendisFlags) {
 
 	checkAndCreateTmpFolder()
+	checkAndCreatePDFsFolder()
 	removeOldFilesFromTmpFolder()
 
 	for _, t := range tmpls {
@@ -109,6 +110,19 @@ func checkAndCreateTmpFolder() {
 	}
 }
 
+func checkAndCreatePDFsFolder() {
+	tmpFolder := filepath.Join("PDFs")
+	_, err := os.Stat(tmpFolder)
+	if err != nil {
+		if os.IsNotExist(err) {
+			err = os.Mkdir(tmpFolder, 0777)
+			if err != nil {
+				log.Println("Error creating PDFs folder")
+			}
+		}
+	}
+}
+
 func removeOldFilesFromTmpFolder() {
 	files, err := filepath.Glob(filepath.Join("tmp/*"))
 	if err != nil {
@@ -129,7 +143,7 @@ func copyFile() {
 	}
 	defer srcFile.Close()
 
-	destFile, err := os.Create("stats.pdf")
+	destFile, err := os.Create("PDFs/stats.pdf")
 	if err != nil {
 		panic(err)
 	}
