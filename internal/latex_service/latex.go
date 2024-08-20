@@ -17,6 +17,7 @@ import (
 func GenerateLaTeXFiles(tmpls []structs.TemplateStruct, flags *common.ColligendisFlags) {
 
 	checkAndCreateTmpFolder()
+	checkAndCreatePDFsFolder()
 	removeOldFilesFromTmpFolder()
 
 	for _, t := range tmpls {
@@ -27,7 +28,9 @@ func GenerateLaTeXFiles(tmpls []structs.TemplateStruct, flags *common.Colligendi
 		}
 	}
 
-	err := createFileByTemplate("tmp/stats.tmpl", "tmp/stats.tex", getHabrData())
+	templateData := getHabrData()
+
+	err := createFileByTemplate("tmp/stats.tmpl", "tmp/stats.tex", templateData)
 	if err != nil {
 		log.Printf("Unable to create file: %w", err)
 	}
@@ -35,7 +38,7 @@ func GenerateLaTeXFiles(tmpls []structs.TemplateStruct, flags *common.Colligendi
 	generatePDF(flags)
 	generatePDF(flags)
 
-	copyFile()
+	copyFile(templateData.LatestDate)
 }
 
 func getHabrData() structs.TemplateData {
@@ -109,6 +112,19 @@ func checkAndCreateTmpFolder() {
 	}
 }
 
+func checkAndCreatePDFsFolder() {
+	tmpFolder := filepath.Join("PDFs")
+	_, err := os.Stat(tmpFolder)
+	if err != nil {
+		if os.IsNotExist(err) {
+			err = os.Mkdir(tmpFolder, 0777)
+			if err != nil {
+				log.Println("Error creating PDFs folder")
+			}
+		}
+	}
+}
+
 func removeOldFilesFromTmpFolder() {
 	files, err := filepath.Glob(filepath.Join("tmp/*"))
 	if err != nil {
@@ -122,14 +138,16 @@ func removeOldFilesFromTmpFolder() {
 	}
 }
 
-func copyFile() {
+func copyFile(latestDate string) {
 	srcFile, err := os.Open("tmp/stats.pdf")
 	if err != nil {
 		panic(err)
 	}
 	defer srcFile.Close()
 
-	destFile, err := os.Create("stats.pdf")
+	filename := fmt.Sprintf("PDFs/flant_stats_%s.pdf", latestDate)
+
+	destFile, err := os.Create(filename)
 	if err != nil {
 		panic(err)
 	}
