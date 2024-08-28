@@ -365,10 +365,6 @@ func GetArticlesFormLastPeriod(dt time.Time, getAll bool, global bool) (int, []s
 			stat.Date = a.DateOfPublication
 			stat.Author = getAuthorByID(a.Author.ID)
 			stat.DayBefore = date_service.GetDaysBefore(a.DateOfPublication, time.Now())
-			if a.Name == "25 новых проектов в песочнице CNCF: мегаобзор" {
-				log.Println(stats[0].ID)
-				log.Println(stats[1].ID)
-			}
 			if len(stats) > 1 {
 				stat.Views = stats[1].Views
 				stat.Growth = stats[1].Views - stats[0].Views
