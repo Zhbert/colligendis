@@ -295,9 +295,16 @@ func GetLatestStatsFromArticle(articleID uint) ([]domain.HabrStats, bool) {
 		state = true
 		db.
 			Where("habr_article_id = ?", articleID).
-			Order("date_of_stats").
+			Order("date_of_stats DESC").
 			Find(&stats).
 			Limit(2)
+	}
+
+	if len(stats) > 1 {
+		var newStats []domain.HabrStats
+		newStats = append(newStats, stats[1])
+		newStats = append(newStats, stats[0])
+		return newStats, state
 	}
 
 	return stats, state
@@ -358,6 +365,10 @@ func GetArticlesFormLastPeriod(dt time.Time, getAll bool, global bool) (int, []s
 			stat.Date = a.DateOfPublication
 			stat.Author = getAuthorByID(a.Author.ID)
 			stat.DayBefore = date_service.GetDaysBefore(a.DateOfPublication, time.Now())
+			if a.Name == "25 новых проектов в песочнице CNCF: мегаобзор" {
+				log.Println(stats[0].ID)
+				log.Println(stats[1].ID)
+			}
 			if len(stats) > 1 {
 				stat.Views = stats[1].Views
 				stat.Growth = stats[1].Views - stats[0].Views
