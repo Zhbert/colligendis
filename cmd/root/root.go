@@ -26,6 +26,7 @@ import (
 	"colligendis/cmd/common"
 	"colligendis/cmd/config"
 	"colligendis/cmd/load"
+	"colligendis/cmd/version"
 	"colligendis/cmd/view"
 	"colligendis/internal/common/structs"
 	"os"
@@ -52,6 +53,7 @@ func createRootCommand(flags *common.ColligendisFlags, tmpls []structs.TemplateS
 	cmd.AddCommand(load.GetLoadCommand(flags))
 	cmd.AddCommand(config.GetConfigCommand(flags))
 	cmd.AddCommand(view.GetViewCommand(flags))
+	cmd.AddCommand(version.GetVersionCommand(flags))
 
 	cmd.PersistentFlags().BoolVarP(&flags.ViewMode, "verbose", "v", false, "Show the full report of the commands")
 

@@ -4,6 +4,7 @@ vars:
   VERSION:
     sh: git describe --tags | sed -r 's/-.+//'
 
+
 tasks:
   prepare:
     desc: 'Create folder for results of building'
@@ -61,12 +62,12 @@ tasks:
   build:
     desc: 'Build for the current platform'
     cmds:
-      - go build .
+      - go build -ldflags="-X 'colligendis/cmd/version.Version={{ .VERSION }}'" .
   build-loop:
     cmds:
       - |
         rm -rf temp && mkdir temp
-        {{ .GOOS }} {{ .GOARCH }} go build -o temp/colligendis{{ if .WIN }}.exe{{ end }}
+        {{ .GOOS }} {{ .GOARCH }} go build -o -ldflags="-X 'colligendis/cmd/version.Version={{ .VERSION }}'" temp/colligendis{{ if .WIN }}.exe{{ end }}
         cp LICENSE temp/LICENSE{{ if .WIN }}.txt{{ end }}
         cp docs/INSTALL temp/INSTALL{{ if .WIN }}.txt{{ end }}
         cd temp
