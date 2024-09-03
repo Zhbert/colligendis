@@ -1,7 +1,8 @@
 version: '3'
 
 vars:
-  VERSION: "v0.2.0"
+  VERSION:
+    sh: git describe --tags | sed -r 's/-.+//'
 
 tasks:
   prepare:
