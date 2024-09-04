@@ -15,6 +15,9 @@ var preamble []byte
 //go:embed templates/tex/stats.tmpl
 var template []byte
 
+//go:embed convert_csv.sh
+var convertScript []byte
+
 func main() {
 
 	var tmpls []structs.TemplateStruct
@@ -28,6 +31,11 @@ func main() {
 	statsStruct.Name = "stats.tmpl"
 	statsStruct.Data = template
 	tmpls = append(tmpls, statsStruct)
+
+	var convertScriptStruct structs.TemplateStruct
+	convertScriptStruct.Name = "convert_csv.sh"
+	convertScriptStruct.Data = convertScript
+	tmpls = append(tmpls, convertScriptStruct)
 
 	root.Execute(tmpls)
 }
