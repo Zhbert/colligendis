@@ -21,10 +21,12 @@ func GenerateLaTeXFiles(tmpls []structs.TemplateStruct, flags *common.Colligendi
 	removeOldFilesFromTmpFolder()
 
 	for _, t := range tmpls {
-		path := filepath.Join("tmp", t.Name)
-		err := os.WriteFile(path, t.Data, 0777)
-		if err != nil {
-			log.Println("Can't create file " + path)
+		if t.Name != "convert_csv.sh" {
+			path := filepath.Join("tmp", t.Name)
+			err := os.WriteFile(path, t.Data, 0777)
+			if err != nil {
+				log.Println("Can't create file " + path)
+			}
 		}
 	}
 

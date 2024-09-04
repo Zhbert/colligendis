@@ -39,7 +39,9 @@ func loadHabrFromFile(fileName string) []structs.HabrArticle {
 	}
 	defer newFile.Close()
 
-	if charsets.CheckCharset(fileName) {
+	charsetType, _ := charsets.CheckCharset(fileName)
+
+	if charsetType {
 		r := csv.NewReader(newFile)
 		r.Comma = '\t'
 		r.FieldsPerRecord = 16

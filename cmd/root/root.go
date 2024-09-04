@@ -25,6 +25,7 @@ import (
 	"colligendis/cmd/collect"
 	"colligendis/cmd/common"
 	"colligendis/cmd/config"
+	"colligendis/cmd/convert"
 	"colligendis/cmd/load"
 	"colligendis/cmd/version"
 	"colligendis/cmd/view"
@@ -54,6 +55,7 @@ func createRootCommand(flags *common.ColligendisFlags, tmpls []structs.TemplateS
 	cmd.AddCommand(config.GetConfigCommand(flags))
 	cmd.AddCommand(view.GetViewCommand(flags))
 	cmd.AddCommand(version.GetVersionCommand(flags))
+	cmd.AddCommand(convert.GetConvertCommand(flags, tmpls))
 
 	cmd.PersistentFlags().BoolVarP(&flags.ViewMode, "verbose", "v", false, "Show the full report of the commands")
 
