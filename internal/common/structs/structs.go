@@ -62,6 +62,7 @@ type TemplateStruct struct {
 }
 
 type TemplateData struct {
+	Version                    string
 	AllViewsCount              int
 	PreviousDate               string
 	LatestDate                 string
