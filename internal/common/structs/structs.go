@@ -63,6 +63,7 @@ type TemplateStruct struct {
 
 type TemplateData struct {
 	Version                    string
+	StatsInBaseCount           int64
 	AllViewsCount              int
 	PreviousDate               string
 	LatestDate                 string

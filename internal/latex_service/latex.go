@@ -49,6 +49,7 @@ func getHabrData() structs.TemplateData {
 
 	data.Version = version.GetVersion()
 
+	data.StatsInBaseCount = db_service.GetCountOfStats()
 	data.AllViewsCount = db_service.GetHabrViewsCount()
 	data.PreviousDate, data.LatestDate = getDates()
 	data.ArticlesCount = db_service.GetHabrArticlesCount()
