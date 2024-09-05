@@ -123,3 +123,6 @@ tmp
 
 result
 temp
+
+*.DS_Store
+._*
