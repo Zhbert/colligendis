@@ -62,7 +62,7 @@ tasks:
   build:
     desc: 'Build for the current platform'
     cmds:
-      - go build -ldflags="-X 'colligendis/cmd/version.Version={{ .VERSION }}'" .
+      - go build .
   build-loop:
     cmds:
       - |
