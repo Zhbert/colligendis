@@ -436,3 +436,16 @@ func getCountOfAuthorArticles(id uint) int64 {
 	}
 	return count
 }
+
+func GetCountOfStats() int64 {
+	var count int64
+
+	db, err := gorm.Open(sqlite.Open("colligendis.db"),
+		&gorm.Config{Logger: logger.Default.LogMode(getLogger())})
+	if err != nil {
+		log.Fatal("Error opening db!")
+	} else {
+		db.Model(&domain.HabrStats{}).Distinct("date_of_stats").Count(&count)
+	}
+	return count
+}
