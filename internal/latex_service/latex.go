@@ -2,6 +2,7 @@ package latex_service
 
 import (
 	"colligendis/cmd/common"
+	"colligendis/cmd/version"
 	"colligendis/internal/common/structs"
 	"colligendis/internal/db_service"
 	"fmt"
@@ -45,6 +46,8 @@ func GenerateLaTeXFiles(tmpls []structs.TemplateStruct, flags *common.Colligendi
 
 func getHabrData() structs.TemplateData {
 	var data structs.TemplateData
+
+	data.Version = version.GetVersion()
 
 	data.AllViewsCount = db_service.GetHabrViewsCount()
 	data.PreviousDate, data.LatestDate = getDates()
