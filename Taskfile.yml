@@ -67,7 +67,7 @@ tasks:
     cmds:
       - |
         rm -rf temp && mkdir temp
-        {{ .GOOS }} {{ .GOARCH }} go build -o -ldflags="-X 'colligendis/cmd/version.Version={{ .VERSION }}'" temp/colligendis{{ if .WIN }}.exe{{ end }}
+        {{ .GOOS }} {{ .GOARCH }} go build -ldflags="-X 'colligendis/cmd/version.Version={{ .VERSION }}'" -o temp/colligendis{{ if .WIN }}.exe{{ end }}
         cp LICENSE temp/LICENSE{{ if .WIN }}.txt{{ end }}
         cp docs/INSTALL temp/INSTALL{{ if .WIN }}.txt{{ end }}
         cd temp
