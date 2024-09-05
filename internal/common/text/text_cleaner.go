@@ -16,7 +16,7 @@ func CleanText(text string) string {
 	result = deleteSharp.ReplaceAllString(result, "")
 	result = deleteColon.ReplaceAllString(result, "")
 	result = deleteDollar.ReplaceAllString(result, "")
-	result = deleteUnderline.ReplaceAllString(result, " ")
+	result = deleteUnderline.ReplaceAllString(result, "\\_")
 	result = deletePlus.ReplaceAllString(result, "")
 	result = deleteSingleAmp.ReplaceAllString(result, "")
 	return result

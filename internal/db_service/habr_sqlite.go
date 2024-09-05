@@ -364,6 +364,7 @@ func GetArticlesFormLastPeriod(dt time.Time, getAll bool, global bool) (int, []s
 			stat.Name = text.CleanText(a.Name)
 			stat.Date = a.DateOfPublication
 			stat.Author = getAuthorByID(a.Author.ID)
+			stat.Author.Name = text.CleanText(stat.Author.Name)
 			stat.DayBefore = date_service.GetDaysBefore(a.DateOfPublication, time.Now())
 			if len(stats) > 1 {
 				stat.Views = stats[1].Views
