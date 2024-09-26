@@ -38,4 +38,4 @@ jobs:
           git config --global user.email 'github-actions@github.com'
           git add CHANGELOG.md
           git commit -m "Update CHANGELOG.md"
-          git push https://github.com/${{ github.repository }}.git HEAD:update-changelog
+          git push https://github.com/${{ github.repository }}.git HEAD:main
