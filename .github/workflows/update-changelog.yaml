@@ -1,7 +1,7 @@
 name: Update changelog for unreleased commits
 
 on:
-  pull_request:
+  push:
     branches:
       - "main"
 
