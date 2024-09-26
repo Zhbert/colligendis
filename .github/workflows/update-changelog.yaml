@@ -25,9 +25,6 @@ jobs:
       - name: Setup Task
         uses: arduino/setup-task@v2
 
-      - name: Check or create branch
-        run: task check_changelog_branch
-
       - name: Generate changelog
         uses: orhun/git-cliff-action@v3
         with:
@@ -42,4 +39,4 @@ jobs:
           git config --global user.email 'github-actions@github.com'
           git add CHANGELOG.md
           git commit -m "Update CHANGELOG.md"
-          git push https://github.com/${{ github.repository }}.git HEAD:update-changelog
+          git push https://github.com/${{ github.repository }}.git HEAD:main

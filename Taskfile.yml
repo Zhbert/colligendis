@@ -78,8 +78,3 @@ tasks:
     cmds:
       - |
         rm -rf ./result
-  check_changelog_branch:
-    desc: 'Check for a changelog branch'
-    cmds:
-      - |
-        if git ls-remote origin update-changelog | grep -sw "update-changelog" 2>&1>/dev/null; then git checkout origin/update-changelog ; else git checkout -b update-changelog ; fi

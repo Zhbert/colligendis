@@ -21,9 +21,6 @@ jobs:
       - name: Setup Task
         uses: arduino/setup-task@v2
 
-      - name: Check or create branch
-        run: task check_changelog_branch
-
       - name: Generate changelog
         uses: orhun/git-cliff-action@v3
         with:
