@@ -1,17 +1,17 @@
-name: Release latest tag
+name: Update changelog for unreleased commits
 
 on:
   push:
     branches:
-      - "main"
+      - 'main'
 
 permissions:
   contents: write
 
 jobs:
   update-changelog:
-    if: startsWith(github.ref, 'refs/tags/v')
     name: Generate changelog
+    if:  startsWith(github.head_ref, 'main')
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
