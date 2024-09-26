@@ -1,9 +1,12 @@
 name: Update changelog for unreleased commits
 
 on:
+  push:
+    branches:
+      - "main"
   pull_request:
     branches:
-      - 'main'
+      - "main"
 
 permissions:
   contents: write
@@ -11,7 +14,7 @@ permissions:
 jobs:
   update-changelog:
     name: Generate changelog
-    if:  startsWith(github.head_ref, 'main')
+    if: ${{ github.ref == 'refs/heads/main' }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
