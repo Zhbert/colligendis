@@ -1,4 +1,4 @@
-name: Release latest tag
+name: Update changelog for release
 
 on:
   release:
