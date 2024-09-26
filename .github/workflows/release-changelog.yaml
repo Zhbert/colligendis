@@ -1,9 +1,8 @@
 name: Release latest tag
 
 on:
-  push:
-    branches:
-      - "main"
+  release:
+    types: [ created ]
 
 permissions:
   contents: write
