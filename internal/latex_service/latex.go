@@ -64,6 +64,7 @@ func getHabrData() structs.TemplateData {
 	data.AuthorsTopGlobal = db_service.GetTopOfAuthors(false)
 	data.AuthorsTopGlobal = data.AuthorsTopGlobal[0:5]
 	data.Authors = db_service.GetTopOfAuthors(true)
+	data.AllDates = db_service.GetAllDatesOfStats()
 
 	return data
 }

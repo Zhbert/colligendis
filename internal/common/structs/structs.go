@@ -76,6 +76,7 @@ type TemplateData struct {
 	AuthorsCount               int
 	AuthorsTopGlobal           []AuthorsTop
 	Authors                    []AuthorsTop
+	AllDates                   []string
 }
 
 type AuthorsTop struct {

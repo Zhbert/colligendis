@@ -79,27 +79,36 @@
             \caption{Топ-5 авторов за все время}
             \end{threeparttable}
             \end{table}
-    \subsection{Статистика глобальная}
-        \subsubsection{Все статьи в блоге}
-            Отсортировано по количеству просмотров за неделю.
-             \begin{longtable}{|p{0.60\textwidth}|*{3}{p{0.10\textwidth}|}}
-             \hline
-             \textbf{Название статьи} & \textbf{Дата публикации} &  \textbf{Общее кол-во просмотров} & \textbf{Кол-во просмотров за неделю} \\ \hline
-             \hline \endfirsthead
-             {{ range .AllArticlesGlobal }}
-             {{ .Name }} & {{ .Date.Format "2006-01-02" }} & {{ .Views }} & {{ .Growth }} \\ \hline
-             {{ end }}
-             \caption{Все статьи в блоге}
-             \end{longtable}
-        \subsubsection{Все авторы блога}
-        Отсортированы по имени.
-             \begin{longtable}{|p{0.65\textwidth}|p{0.25\textwidth}|}
-             \hline
-             \textbf{Имя автора} & \textbf{Количество статей} \\ \hline
-             \hline \endfirsthead
-             {{ range .Authors }}
-             {{ .Name }} & {{ .ArticlesCount }} \\ \hline
-             {{ end }}
-             \caption{Все авторы блога}
-             \end{longtable}
+        \subsection{Статистика глобальная}
+            \subsubsection{Все статьи в блоге}
+                Отсортировано по количеству просмотров за неделю.
+                 \begin{longtable}{|p{0.60\textwidth}|*{3}{p{0.10\textwidth}|}}
+                 \hline
+                 \textbf{Название статьи} & \textbf{Дата публикации} &  \textbf{Общее кол-во просмотров} & \textbf{Кол-во просмотров за неделю} \\ \hline
+                 \hline \endfirsthead
+                 {{ range .AllArticlesGlobal }}
+                 {{ .Name }} & {{ .Date.Format "2006-01-02" }} & {{ .Views }} & {{ .Growth }} \\ \hline
+                 {{ end }}
+                 \caption{Все статьи в блоге}
+                 \end{longtable}
+            \subsubsection{Все авторы блога}
+            Отсортированы по имени.
+                 \begin{longtable}{|p{0.65\textwidth}|p{0.25\textwidth}|}
+                 \hline
+                 \textbf{Имя автора} & \textbf{Количество статей} \\ \hline
+                 \hline \endfirsthead
+                 {{ range .Authors }}
+                 {{ .Name }} & {{ .ArticlesCount }} \\ \hline
+                 {{ end }}
+                 \caption{Все авторы блога}
+                 \end{longtable}
+    \section{Системная информация}
+        \subsection{Хабр}
+            Всего записей статистики в базе данных: {{ .StatsInBaseCount }}:
+            \begin{itemize}
+                \setlength{\itemsep}{-2mm}
+                {{ range .AllDates }}
+                \item {{ . }}
+                {{ end }}
+            \end{itemize}
 \end{document}
