@@ -449,3 +449,26 @@ func GetCountOfStats() int64 {
 	}
 	return count
 }
+
+func GetAllDatesOfStats() []string {
+	var dates []string
+
+	var stats []domain.HabrStats
+
+	db, err := gorm.Open(sqlite.Open("colligendis.db"),
+		&gorm.Config{Logger: logger.Default.LogMode(getLogger())})
+	if err != nil {
+		log.Fatal("Error opening db!")
+	} else {
+		db.
+			Group("date_of_stats").
+			Order("date_of_stats DESC").
+			Find(&stats)
+
+		for _, stat := range stats {
+			dates = append(dates, stat.DateOfStats.Format("January 2, 2006"))
+		}
+	}
+
+	return dates
+}
