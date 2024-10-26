@@ -96,7 +96,9 @@ func findCsvFiles(pathToDir, ext string) []string {
 
 func processFile(csvFile string, flags *common.ColligendisFlags) {
 	start := time.Now()
-	log.Printf("Parsing file %s... \n", csvFile)
+	if flags.ViewMode {
+		log.Printf("Parsing file %s... \n", csvFile)
+	}
 	articles := loadHabrFromFile(csvFile)
 	if articles != nil {
 		if db_service.SaveToDB(articles, getStatsDate(csvFile), flags) {
