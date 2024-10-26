@@ -50,7 +50,9 @@ func GetLoadCommand(flags *common.ColligendisFlags) *cobra.Command {
 					if err != nil {
 						fmt.Println(err)
 					} else {
-						log.Printf("The download of CSV files from the catalog starts: %s...", currentDirectory)
+						if flags.ViewMode {
+							log.Printf("The download of CSV files from the catalog starts: %s...", currentDirectory)
+						}
 						for _, csvFile := range findCsvFiles(currentDirectory, ".csv") {
 							processFile(csvFile, flags)
 						}
@@ -102,12 +104,14 @@ func processFile(csvFile string, flags *common.ColligendisFlags) {
 	articles := loadHabrFromFile(csvFile)
 	if articles != nil {
 		if db_service.SaveToDB(articles, getStatsDate(csvFile), flags) {
-			duration := time.Since(start)
-			log.Printf("The file '%s' has been processed in %s \n", csvFile, duration)
+			if flags.ViewMode {
+				duration := time.Since(start)
+				log.Printf("The file '%s' has been processed in %s \n", csvFile, duration)
+			}
 		} else {
-			log.Println("File processing error")
+			log.Printf("File %s processing error", csvFile)
 		}
 	} else {
-		log.Println("The file encoding is not UTF-8!")
+		log.Printf("The file %s encoding is not UTF-8!", csvFile)
 	}
 }
