@@ -53,9 +53,13 @@ func GetLoadCommand(flags *common.ColligendisFlags) *cobra.Command {
 						if flags.ViewMode {
 							log.Printf("The download of CSV files from the catalog starts: %s...", currentDirectory)
 						}
+						var allCount = 0
+						var processedCount = 0
 						for _, csvFile := range findCsvFiles(currentDirectory, ".csv") {
-							processFile(csvFile, flags)
+							allCount++
+							processedCount += processFile(csvFile, flags)
 						}
+						fmt.Printf("All CSV files founded: %d\nProcessed files: %d\nFiles with errors: %d\n", allCount, processedCount, allCount-processedCount)
 					}
 				}
 			}
@@ -96,7 +100,7 @@ func findCsvFiles(pathToDir, ext string) []string {
 	return a
 }
 
-func processFile(csvFile string, flags *common.ColligendisFlags) {
+func processFile(csvFile string, flags *common.ColligendisFlags) int {
 	start := time.Now()
 	if flags.ViewMode {
 		log.Printf("Parsing file %s... \n", csvFile)
@@ -110,8 +114,11 @@ func processFile(csvFile string, flags *common.ColligendisFlags) {
 			}
 		} else {
 			log.Printf("File %s processing error", csvFile)
+			return 0
 		}
 	} else {
 		log.Printf("The file %s encoding is not UTF-8!", csvFile)
+		return 0
 	}
+	return 1
 }
