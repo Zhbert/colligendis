@@ -29,6 +29,7 @@ import (
 	"github.com/spf13/cobra"
 	"log"
 	"strconv"
+	"time"
 )
 
 const (
@@ -48,7 +49,8 @@ func GetCollectCommand(flags *common.ColligendisFlags, tmpls []structs.TemplateS
 				case true:
 					latex_service.GenerateLaTeXFiles(tmpls, flags)
 				case false:
-					log.Printf("Total habr views: %s", strconv.Itoa(db_service.GetHabrViewsCount()))
+					var zeroTime time.Time
+					log.Printf("Total habr views: %s", strconv.Itoa(db_service.GetHabrViewsCount(zeroTime)))
 					if flags.Full {
 						getFullHabrViewsCount(flags.Limit, flags.SortType)
 					}

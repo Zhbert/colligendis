@@ -77,10 +77,16 @@ type TemplateData struct {
 	AuthorsTopGlobal           []AuthorsTop
 	Authors                    []AuthorsTop
 	AllDates                   []string
+	StatsForDiagram            []StatsForDiagram
 }
 
 type AuthorsTop struct {
 	Name          string
 	ID            int
 	ArticlesCount int64
+}
+
+type StatsForDiagram struct {
+	Date  string
+	Count int
 }

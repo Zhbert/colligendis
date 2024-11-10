@@ -4,6 +4,7 @@ import (
 	"colligendis/cmd/common"
 	"colligendis/cmd/version"
 	"colligendis/internal/common/structs"
+	"colligendis/internal/csv_service"
 	"colligendis/internal/db_service"
 	"fmt"
 	"html/template"
@@ -50,7 +51,8 @@ func getHabrData() structs.TemplateData {
 	data.Version = version.GetVersion()
 
 	data.StatsInBaseCount = db_service.GetCountOfStats()
-	data.AllViewsCount = db_service.GetHabrViewsCount()
+	var zeroTime time.Time
+	data.AllViewsCount = db_service.GetHabrViewsCount(zeroTime)
 	data.PreviousDate, data.LatestDate = getDates()
 	data.ArticlesCount = db_service.GetHabrArticlesCount()
 	pd, _ := time.Parse("2006-01-02", data.PreviousDate)
@@ -64,7 +66,10 @@ func getHabrData() structs.TemplateData {
 	data.AuthorsTopGlobal = db_service.GetTopOfAuthors(false)
 	data.AuthorsTopGlobal = data.AuthorsTopGlobal[0:5]
 	data.Authors = db_service.GetTopOfAuthors(true)
-	data.AllDates = db_service.GetAllDatesOfStats()
+	data.AllDates, _ = db_service.GetAllDatesOfStats()
+	data.StatsForDiagram = db_service.GetAllStatsAndDatesForDiagram()
+
+	csv_service.PrepareCSV("tmp", "articlesCount.csv", data.StatsForDiagram)
 
 	return data
 }

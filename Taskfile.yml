@@ -78,3 +78,9 @@ tasks:
     cmds:
       - |
         rm -rf ./result
+  run-for-test-with-file:
+    desc: 'Run utility with generation of output file'
+    cmds:
+      - task: build
+      - |
+        ./colligendis collect --habr --file -v

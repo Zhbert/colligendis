@@ -22,6 +22,9 @@
 \usepackage{listings}
 \usepackage{float}
 \usepackage{longtable}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.9}
+\usepgfplotslibrary{dateplot}
 \usepackage{tocloft}
 \usepackage{misccorr}
 \usepackage{graphicx}
