@@ -31,6 +31,7 @@ import (
 	"os"
 	"sort"
 	"strconv"
+	"time"
 )
 
 func getFullHabrViewsCount(limit int, sortType string) []structs.StatsArticle {
@@ -44,7 +45,8 @@ func getFullHabrViewsCount(limit int, sortType string) []structs.StatsArticle {
 	var rowStructs []structs.StatsArticle
 
 	for i, a := range articles {
-		stats, state := db_service.GetLatestStatsFromArticle(a.ID)
+		var zeroTime time.Time
+		stats, state := db_service.GetLatestStatsFromArticle(a.ID, zeroTime)
 		var stat structs.StatsArticle
 		if state {
 			stat.Id = i

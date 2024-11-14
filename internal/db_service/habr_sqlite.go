@@ -283,7 +283,7 @@ func GetLatestArticles() []domain.HabrStats {
 	return stats
 }
 
-func GetLatestStatsFromArticle(articleID uint) ([]domain.HabrStats, bool) {
+func GetLatestStatsFromArticle(articleID uint, sinceDate time.Time) ([]domain.HabrStats, bool) {
 	var stats []domain.HabrStats
 	state := false
 
@@ -293,11 +293,20 @@ func GetLatestStatsFromArticle(articleID uint) ([]domain.HabrStats, bool) {
 		log.Fatal("Error opening db!")
 	} else {
 		state = true
-		db.
-			Where("habr_article_id = ?", articleID).
-			Order("date_of_stats DESC").
-			Find(&stats).
-			Limit(2)
+		if !sinceDate.IsZero() {
+			db.
+				Where("habr_article_id = ?", articleID).
+				Where("date_of_stats <= ?", sinceDate).
+				Order("date_of_stats DESC").
+				Find(&stats).
+				Limit(2)
+		} else {
+			db.
+				Where("habr_article_id = ?", articleID).
+				Order("date_of_stats DESC").
+				Find(&stats).
+				Limit(2)
+		}
 	}
 
 	if len(stats) > 1 {
@@ -310,12 +319,12 @@ func GetLatestStatsFromArticle(articleID uint) ([]domain.HabrStats, bool) {
 	return stats, state
 }
 
-func GetHabrViewsCount() int {
+func GetHabrViewsCount(sinceDate time.Time) int {
 	articles := GetAllHabrArticles("")
 	count := 0
 
 	for _, a := range articles {
-		stats, state := GetLatestStatsFromArticle(a.ID)
+		stats, state := GetLatestStatsFromArticle(a.ID, sinceDate)
 		if state {
 			if len(stats) > 1 {
 				diff := stats[1].Views - stats[0].Views
@@ -357,7 +366,8 @@ func GetArticlesFormLastPeriod(dt time.Time, getAll bool, global bool) (int, []s
 	var latestArts []structs.StatsArticle
 	articles := GetAllHabrArticles("")
 	for i, a := range articles {
-		stats, state := GetLatestStatsFromArticle(a.ID)
+		var zeroTime time.Time
+		stats, state := GetLatestStatsFromArticle(a.ID, zeroTime)
 		var stat structs.StatsArticle
 		if state {
 			stat.Id = i
@@ -450,10 +460,11 @@ func GetCountOfStats() int64 {
 	return count
 }
 
-func GetAllDatesOfStats() []string {
+func GetAllDatesOfStats() ([]string, []time.Time) {
 	var dates []string
 
 	var stats []domain.HabrStats
+	var timeDates []time.Time
 
 	db, err := gorm.Open(sqlite.Open("colligendis.db"),
 		&gorm.Config{Logger: logger.Default.LogMode(getLogger())})
@@ -464,11 +475,26 @@ func GetAllDatesOfStats() []string {
 			Group("date_of_stats").
 			Order("date_of_stats DESC").
 			Find(&stats)
-
 		for _, stat := range stats {
+			timeDates = append(timeDates, stat.DateOfStats)
 			dates = append(dates, stat.DateOfStats.Format("January 2, 2006"))
 		}
 	}
 
-	return dates
+	return dates, timeDates
+}
+
+func GetAllStatsAndDatesForDiagram() []structs.StatsForDiagram {
+	var statsForDiagram []structs.StatsForDiagram
+
+	_, dates := GetAllDatesOfStats()
+
+	for i := 0; i < len(dates); i++ {
+		var st structs.StatsForDiagram
+		st.Date = dates[i].Format("2006-01-02")
+		st.Count = GetHabrViewsCount(dates[i])
+		statsForDiagram = append(statsForDiagram, st)
+	}
+
+	return statsForDiagram
 }
