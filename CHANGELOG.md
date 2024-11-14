@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [unreleased]
+
+### Features
+
+- *(template)* Add graphics with main info to the Habr section (#31)
+
 ## [0.2.3] - 2024-10-28
 
 ### Features
