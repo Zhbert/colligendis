@@ -52,14 +52,14 @@ func SaveToDB(articles []structs.HabrArticle, dateOfStats time.Time, flags *comm
 			log.Fatal("Error migrating DB")
 			return false
 		}
-		for _, a := range articles {
+		for i := 0; i < len(articles); i++ {
 			var inDBArt domain.HabrArticle
-			result := db.Where("habr_number = ?", a.HabrNumber).First(&inDBArt)
+			result := db.Where("habr_number = ?", articles[i].HabrNumber).First(&inDBArt)
 			if errors.Is(result.Error, gorm.ErrRecordNotFound) {
 				if flags.ViewMode {
-					log.Println("Create article: ", a.Name)
+					log.Println("Create article: ", articles[i].Name)
 				}
-				newArticle := createNewArticleEntity(&a, db, flags)
+				newArticle := createNewArticleEntity(&articles[i], db, flags)
 				db.Create(&newArticle)
 				inDBArt = newArticle
 				if flags.ViewMode {
@@ -71,14 +71,14 @@ func SaveToDB(articles []structs.HabrArticle, dateOfStats time.Time, flags *comm
 			result = db.Where("date_of_stats = ?", dateOfStats).
 				Where("habr_article_id = ?", inDBArt.ID).First(&st)
 			if errors.Is(result.Error, gorm.ErrRecordNotFound) {
-				st.Saves = a.Saves
-				st.Views = a.Views
-				st.Comments = a.Comments
+				st.Saves = articles[i].Saves
+				st.Views = articles[i].Views
+				st.Comments = articles[i].Comments
 				st.HabrArticle = inDBArt
-				st.LikesAll = a.LikesAll
-				st.Likes = a.Likes
-				st.LikesDown = a.LikesDown
-				st.LikesUp = a.LikesUp
+				st.LikesAll = articles[i].LikesAll
+				st.Likes = articles[i].Likes
+				st.LikesDown = articles[i].LikesDown
+				st.LikesUp = articles[i].LikesUp
 				st.DateOfStats = dateOfStats
 				db.Save(&st)
 			} else {
@@ -155,10 +155,10 @@ func getAuthorByID(id uint) domain.HabrAuthor {
 func getHubs(db *gorm.DB, hubs []string, flags *common.ColligendisFlags) []domain.HabrHub {
 	createHubsIfNotExists(db, hubs, flags)
 	var hubsForDB []domain.HabrHub
-	for _, h := range hubs {
+	for i := 0; i < len(hubs); i++ {
 		var hub domain.HabrHub
-		h = strings.TrimSpace(h)
-		result := db.Where("name = ?", h).First(&hub)
+		hubs[i] = strings.TrimSpace(hubs[i])
+		result := db.Where("name = ?", hubs[i]).First(&hub)
 		if !errors.Is(result.Error, gorm.ErrRecordNotFound) {
 			hubsForDB = append(hubsForDB, hub)
 		}
@@ -167,12 +167,12 @@ func getHubs(db *gorm.DB, hubs []string, flags *common.ColligendisFlags) []domai
 }
 
 func createHubsIfNotExists(db *gorm.DB, hubs []string, flags *common.ColligendisFlags) {
-	for _, h := range hubs {
+	for i := 0; i < len(hubs); i++ {
 		var hub domain.HabrHub
-		h = strings.TrimSpace(h)
-		result := db.Where("name = ?", h).First(&hub)
+		hubs[i] = strings.TrimSpace(hubs[i])
+		result := db.Where("name = ?", hubs[i]).First(&hub)
 		if errors.Is(result.Error, gorm.ErrRecordNotFound) {
-			hub.Name = h
+			hub.Name = hubs[i]
 			db.Save(&hub)
 			if flags.ViewMode {
 				log.Printf("Hub created: %s \n", hub.Name)
@@ -323,8 +323,8 @@ func GetHabrViewsCount(sinceDate time.Time) int {
 	articles := GetAllHabrArticles("")
 	count := 0
 
-	for _, a := range articles {
-		stats, state := GetLatestStatsFromArticle(a.ID, sinceDate)
+	for i := 0; i < len(articles); i++ {
+		stats, state := GetLatestStatsFromArticle(articles[i].ID, sinceDate)
 		if state {
 			if len(stats) > 1 {
 				diff := stats[1].Views - stats[0].Views
@@ -365,17 +365,17 @@ func GetArticlesFormLastPeriod(dt time.Time, getAll bool, global bool) (int, []s
 	count := 0
 	var latestArts []structs.StatsArticle
 	articles := GetAllHabrArticles("")
-	for i, a := range articles {
+	for i := 0; i < len(articles); i++ {
 		var zeroTime time.Time
-		stats, state := GetLatestStatsFromArticle(a.ID, zeroTime)
+		stats, state := GetLatestStatsFromArticle(articles[i].ID, zeroTime)
 		var stat structs.StatsArticle
 		if state {
 			stat.Id = i
-			stat.Name = text.CleanText(a.Name)
-			stat.Date = a.DateOfPublication
-			stat.Author = getAuthorByID(a.Author.ID)
+			stat.Name = text.CleanText(articles[i].Name)
+			stat.Date = articles[i].DateOfPublication
+			stat.Author = getAuthorByID(articles[i].Author.ID)
 			stat.Author.Name = text.CleanText(stat.Author.Name)
-			stat.DayBefore = date_service.GetDaysBefore(a.DateOfPublication, time.Now())
+			stat.DayBefore = date_service.GetDaysBefore(articles[i].DateOfPublication, time.Now())
 			if len(stats) > 1 {
 				stat.Views = stats[1].Views
 				stat.Growth = stats[1].Views - stats[0].Views
@@ -387,7 +387,7 @@ func GetArticlesFormLastPeriod(dt time.Time, getAll bool, global bool) (int, []s
 			log.Println("There are no stats in database!")
 		}
 		if !getAll {
-			if a.DateOfPublication.After(dt) {
+			if articles[i].DateOfPublication.After(dt) {
 				count++
 				latestArts = append(latestArts, stat)
 			}
@@ -418,10 +418,10 @@ func GetTopOfAuthors(sortName bool) []structs.AuthorsTop {
 		authors = GetAllHabrAutors("")
 	}
 
-	for _, author := range authors {
+	for i := 0; i < len(authors); i++ {
 		var t structs.AuthorsTop
-		t.Name = text.CleanText(author.Name)
-		t.ArticlesCount = getCountOfAuthorArticles(author.ID)
+		t.Name = text.CleanText(authors[i].Name)
+		t.ArticlesCount = getCountOfAuthorArticles(authors[i].ID)
 		top = append(top, t)
 	}
 
@@ -475,9 +475,9 @@ func GetAllDatesOfStats() ([]string, []time.Time) {
 			Group("date_of_stats").
 			Order("date_of_stats DESC").
 			Find(&stats)
-		for _, stat := range stats {
-			timeDates = append(timeDates, stat.DateOfStats)
-			dates = append(dates, stat.DateOfStats.Format("January 2, 2006"))
+		for i := 0; i < len(stats); i++ {
+			timeDates = append(timeDates, stats[i].DateOfStats)
+			dates = append(dates, stats[i].DateOfStats.Format("January 2, 2006"))
 		}
 	}
 
@@ -488,11 +488,27 @@ func GetAllStatsAndDatesForDiagram() []structs.StatsForDiagram {
 	var statsForDiagram []structs.StatsForDiagram
 
 	_, dates := GetAllDatesOfStats()
+	articles := GetAllHabrArticles("")
 
 	for i := 0; i < len(dates); i++ {
 		var st structs.StatsForDiagram
 		st.Date = dates[i].Format("2006-01-02")
-		st.Count = GetHabrViewsCount(dates[i])
+
+		st.Count = 0
+		for y := 0; y < len(articles); y++ {
+			stats, state := GetLatestStatsFromArticle(articles[y].ID, dates[i])
+			if state {
+				if len(stats) > 1 {
+					diff := stats[1].Views - stats[0].Views
+					st.Count = st.Count + diff
+				} else if len(stats) == 1 {
+					st.Count = st.Count + stats[0].Views
+				}
+			} else {
+				log.Println("There are no stats in database!")
+			}
+		}
+
 		statsForDiagram = append(statsForDiagram, st)
 	}
 
