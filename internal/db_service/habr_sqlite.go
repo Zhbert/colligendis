@@ -484,7 +484,7 @@ func GetAllDatesOfStats() ([]string, []time.Time) {
 	return dates, timeDates
 }
 
-func GetAllStatsAndDatesForDiagram() []structs.StatsForDiagram {
+func GetAllStatsAndDatesForDiagram() ([]structs.StatsForDiagram, float64) {
 	var statsForDiagram []structs.StatsForDiagram
 
 	_, dates := GetAllDatesOfStats()
@@ -512,5 +512,7 @@ func GetAllStatsAndDatesForDiagram() []structs.StatsForDiagram {
 		statsForDiagram = append(statsForDiagram, st)
 	}
 
-	return statsForDiagram
+	weeks := dates[0].Sub(dates[len(dates)-1]).Hours() / 168
+
+	return statsForDiagram, weeks
 }

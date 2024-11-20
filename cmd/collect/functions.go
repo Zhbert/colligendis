@@ -44,14 +44,14 @@ func getFullHabrViewsCount(limit int, sortType string) []structs.StatsArticle {
 	var rows []table.Row
 	var rowStructs []structs.StatsArticle
 
-	for i, a := range articles {
+	for i := 0; i < len(articles); i++ {
 		var zeroTime time.Time
-		stats, state := db_service.GetLatestStatsFromArticle(a.ID, zeroTime)
+		stats, state := db_service.GetLatestStatsFromArticle(articles[i].ID, zeroTime)
 		var stat structs.StatsArticle
 		if state {
 			stat.Id = i
-			stat.Name = a.Name
-			stat.Date = a.DateOfPublication
+			stat.Name = articles[i].Name
+			stat.Date = articles[i].DateOfPublication
 			if len(stats) > 1 {
 				stat.Views = stats[1].Views
 				stat.Growth = stats[1].Views - stats[0].Views
@@ -71,13 +71,13 @@ func getFullHabrViewsCount(limit int, sortType string) []structs.StatsArticle {
 		})
 	}
 
-	for _, st := range rowStructs {
+	for i := 0; i < len(rowStructs); i++ {
 		var r table.Row
-		r = append(r, st.Id)
-		r = append(r, st.Name)
-		r = append(r, st.Date.Format("02-Jan-2006"))
-		r = append(r, st.Views)
-		r = append(r, getColorForDiff(st.Growth))
+		r = append(r, rowStructs[i].Id)
+		r = append(r, rowStructs[i].Name)
+		r = append(r, rowStructs[i].Date.Format("02-Jan-2006"))
+		r = append(r, rowStructs[i].Views)
+		r = append(r, getColorForDiff(rowStructs[i].Growth))
 
 		if limit > 0 && len(rows) <= limit {
 			rows = append(rows, r)

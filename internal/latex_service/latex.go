@@ -67,7 +67,7 @@ func getHabrData() structs.TemplateData {
 	data.AuthorsTopGlobal = data.AuthorsTopGlobal[0:5]
 	data.Authors = db_service.GetTopOfAuthors(true)
 	data.AllDates, _ = db_service.GetAllDatesOfStats()
-	data.StatsForDiagram = db_service.GetAllStatsAndDatesForDiagram()
+	data.StatsForDiagram, data.WeeksCount = db_service.GetAllStatsAndDatesForDiagram()
 
 	csv_service.PrepareCSV("tmp", "articlesCount.csv", data.StatsForDiagram)
 
