@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [unreleased]
+
+### Fixes
+
+- *(backend)* Fixed a memory leak (#32)
+
 ## [0.3] - 2024-11-14
 
 ### Features
