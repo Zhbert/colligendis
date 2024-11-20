@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 ## [unreleased]
 
+### Features
+
+- *(template)* Added weeks count to the first graph title (#33)
+
 ### Fixes
 
 - *(backend)* Fixed a memory leak (#32)
