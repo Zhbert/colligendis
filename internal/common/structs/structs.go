@@ -78,6 +78,7 @@ type TemplateData struct {
 	Authors                    []AuthorsTop
 	AllDates                   []string
 	StatsForDiagram            []StatsForDiagram
+	WeeksCount                 float64
 }
 
 type AuthorsTop struct {
