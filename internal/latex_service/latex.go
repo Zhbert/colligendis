@@ -39,10 +39,11 @@ func GenerateLaTeXFiles(tmpls []structs.TemplateStruct, flags *common.Colligendi
 		log.Printf("Unable to create file: %w", err)
 	}
 
-	generatePDF(flags)
-	generatePDF(flags)
-
-	copyFile(templateData.LatestDate)
+	if !flags.DryRun {
+		generatePDF(flags)
+		generatePDF(flags)
+		copyFile(templateData.LatestDate)
+	}
 }
 
 func getHabrData() structs.TemplateData {
