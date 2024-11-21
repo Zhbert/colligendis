@@ -35,4 +35,5 @@ type ColligendisFlags struct {
 	SortType         string
 	ViewMode         bool
 	Limit            int
+	DryRun           bool
 }

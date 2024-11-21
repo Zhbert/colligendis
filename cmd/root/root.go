@@ -58,6 +58,7 @@ func createRootCommand(flags *common.ColligendisFlags, tmpls []structs.TemplateS
 	cmd.AddCommand(convert.GetConvertCommand(flags, tmpls))
 
 	cmd.PersistentFlags().BoolVarP(&flags.ViewMode, "verbose", "v", false, "Show the full report of the commands")
+	cmd.PersistentFlags().BoolVarP(&flags.DryRun, "dry-run", "", false, "Start command without real generation")
 
 	return cmd
 }
