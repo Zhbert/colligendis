@@ -7,6 +7,7 @@ All notable changes to this project will be documented in this file.
 ### Features
 
 - *(template)* Added weeks count to the first graph title (#33)
+- *(backend)* Added the dry-run flag for the LaTeX generation (#34)
 
 ### Fixes
 
