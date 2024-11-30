@@ -27,6 +27,7 @@ import (
 	"colligendis/internal/db_service"
 	"fmt"
 	"github.com/jedib0t/go-pretty/v6/table"
+	"gorm.io/gorm"
 	"log"
 	"os"
 	"sort"
@@ -34,8 +35,8 @@ import (
 	"time"
 )
 
-func getFullHabrViewsCount(limit int, sortType string) []structs.StatsArticle {
-	articles := db_service.GetAllHabrArticles("date")
+func getFullHabrViewsCount(limit int, sortType string, db *gorm.DB) []structs.StatsArticle {
+	articles := db_service.GetAllHabrArticles("date", db)
 
 	t := table.NewWriter()
 	t.SetOutputMirror(os.Stdout)
@@ -46,7 +47,7 @@ func getFullHabrViewsCount(limit int, sortType string) []structs.StatsArticle {
 
 	for i := 0; i < len(articles); i++ {
 		var zeroTime time.Time
-		stats, state := db_service.GetLatestStatsFromArticle(articles[i].ID, zeroTime)
+		stats, state := db_service.GetLatestStatsFromArticle(articles[i].ID, zeroTime, db)
 		var stat structs.StatsArticle
 		if state {
 			stat.Id = i

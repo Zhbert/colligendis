@@ -25,13 +25,14 @@ import (
 	"colligendis/internal/db_service"
 	"colligendis/internal/db_service/domain"
 	"github.com/jedib0t/go-pretty/v6/table"
+	"gorm.io/gorm"
 	"os"
 )
 
-func viewAllHabrArticles(sort string) {
+func viewAllHabrArticles(sort string, db *gorm.DB) {
 	var articles []domain.HabrArticle
 
-	articles = db_service.GetAllHabrArticles(sort)
+	articles = db_service.GetAllHabrArticles(sort, db)
 
 	t := table.NewWriter()
 	t.SetOutputMirror(os.Stdout)
@@ -53,10 +54,10 @@ func viewAllHabrArticles(sort string) {
 	t.Render()
 }
 
-func viewAllHabrAuthors(sort string) {
+func viewAllHabrAuthors(sort string, db *gorm.DB) {
 	var authors []domain.HabrAuthor
 
-	authors = db_service.GetAllHabrAutors(sort)
+	authors = db_service.GetAllHabrAutors(sort, db)
 
 	t := table.NewWriter()
 	t.SetOutputMirror(os.Stdout)
@@ -67,7 +68,7 @@ func viewAllHabrAuthors(sort string) {
 		var r table.Row
 		r = append(r, i+1)
 		r = append(r, a.Name)
-		r = append(r, db_service.GetCountOfArticlesByAuthor(a.ID))
+		r = append(r, db_service.GetCountOfArticlesByAuthor(a.ID, db))
 		rows = append(rows, r)
 	}
 

@@ -39,11 +39,11 @@ func GetViewCommand(flags *common.ColligendisFlags, db *gorm.DB) *cobra.Command 
 			fmt.Println("Select the display type: habr, github")
 		},
 	}
-	cmd.AddCommand(getViewHabrArticlesCommand(flags))
+	cmd.AddCommand(getViewHabrArticlesCommand(flags, db))
 	return cmd
 }
 
-func getViewHabrArticlesCommand(flags *common.ColligendisFlags) *cobra.Command {
+func getViewHabrArticlesCommand(flags *common.ColligendisFlags, db *gorm.DB) *cobra.Command {
 	var cmd = &cobra.Command{
 		Use:     "habr",
 		Short:   "Displaying Habr information in the terminal",
@@ -53,20 +53,20 @@ func getViewHabrArticlesCommand(flags *common.ColligendisFlags) *cobra.Command {
 			if flags.ViewHabrArticles {
 				switch flags.SortType {
 				case "":
-					viewAllHabrArticles("")
+					viewAllHabrArticles("", db)
 				case "name":
-					viewAllHabrArticles("name")
+					viewAllHabrArticles("name", db)
 				case "date":
-					viewAllHabrArticles("date")
+					viewAllHabrArticles("date", db)
 				default:
 					log.Fatal("You need to specify the sort type: name, date")
 				}
 			} else if flags.ViewHabrAuthors {
 				switch flags.SortType {
 				case "":
-					viewAllHabrAuthors("")
+					viewAllHabrAuthors("", db)
 				case "name":
-					viewAllHabrAuthors("name")
+					viewAllHabrAuthors("name", db)
 				default:
 					log.Fatal("You need to specify the sort type: name, date")
 				}

@@ -48,12 +48,12 @@ func GetCollectCommand(flags *common.ColligendisFlags, tmpls []structs.TemplateS
 			if flags.Habr {
 				switch flags.File {
 				case true:
-					latex_service.GenerateLaTeXFiles(tmpls, flags)
+					latex_service.GenerateLaTeXFiles(tmpls, flags, db)
 				case false:
 					var zeroTime time.Time
-					log.Printf("Total habr views: %s", strconv.Itoa(db_service.GetHabrViewsCount(zeroTime)))
+					log.Printf("Total habr views: %s", strconv.Itoa(db_service.GetHabrViewsCount(zeroTime, db)))
 					if flags.Full {
-						getFullHabrViewsCount(flags.Limit, flags.SortType)
+						getFullHabrViewsCount(flags.Limit, flags.SortType, db)
 					}
 				}
 			}
