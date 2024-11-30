@@ -25,9 +25,10 @@ import (
 	"colligendis/cmd/common"
 	"fmt"
 	"github.com/spf13/cobra"
+	"gorm.io/gorm"
 )
 
-func GetConfigCommand(flags *common.ColligendisFlags) *cobra.Command {
+func GetConfigCommand(flags *common.ColligendisFlags, db *gorm.DB) *cobra.Command {
 	var cmd = &cobra.Command{
 		Use:     "config",
 		Short:   "Various utility settings",

@@ -43,7 +43,7 @@ import (
 func SaveToDB(articles []structs.HabrArticle, dateOfStats time.Time, flags *common.ColligendisFlags) bool {
 	createDBIfNotExists()
 	db, err := gorm.Open(sqlite.Open("colligendis.db"),
-		&gorm.Config{Logger: logger.Default.LogMode(getLogger())})
+		&gorm.Config{Logger: logger.Default.LogMode(GetLogger())})
 	if err != nil {
 		log.Fatal("Error opening db!")
 	} else {
@@ -140,7 +140,7 @@ func getAuthorByID(id uint) domain.HabrAuthor {
 	var author domain.HabrAuthor
 
 	db, err := gorm.Open(sqlite.Open("colligendis.db"),
-		&gorm.Config{Logger: logger.Default.LogMode(getLogger())})
+		&gorm.Config{Logger: logger.Default.LogMode(GetLogger())})
 	if err != nil {
 		log.Fatal("Error opening db!")
 	} else {
@@ -184,7 +184,7 @@ func createHubsIfNotExists(db *gorm.DB, hubs []string, flags *common.Colligendis
 func GetAllHabrArticles(sort string) []domain.HabrArticle {
 	var articles []domain.HabrArticle
 	db, err := gorm.Open(sqlite.Open("colligendis.db"),
-		&gorm.Config{Logger: logger.Default.LogMode(getLogger())})
+		&gorm.Config{Logger: logger.Default.LogMode(GetLogger())})
 	if err != nil {
 		log.Fatal("Error opening db!")
 	} else {
@@ -214,7 +214,7 @@ func GetHabrArticlesCount() int64 {
 	var count int64
 
 	db, err := gorm.Open(sqlite.Open("colligendis.db"),
-		&gorm.Config{Logger: logger.Default.LogMode(getLogger())})
+		&gorm.Config{Logger: logger.Default.LogMode(GetLogger())})
 	if err != nil {
 		log.Fatal("Error opening db!")
 	} else {
@@ -228,7 +228,7 @@ func GetAllHabrAutors(sort string) []domain.HabrAuthor {
 	var authors []domain.HabrAuthor
 
 	db, err := gorm.Open(sqlite.Open("colligendis.db"),
-		&gorm.Config{Logger: logger.Default.LogMode(getLogger())})
+		&gorm.Config{Logger: logger.Default.LogMode(GetLogger())})
 	if err != nil {
 		log.Fatal("Error opening db!")
 	} else {
@@ -251,7 +251,7 @@ func GetAllHabrAutors(sort string) []domain.HabrAuthor {
 
 func GetCountOfArticlesByAuthor(authorID uint) int {
 	db, err := gorm.Open(sqlite.Open("colligendis.db"),
-		&gorm.Config{Logger: logger.Default.LogMode(getLogger())})
+		&gorm.Config{Logger: logger.Default.LogMode(GetLogger())})
 	if err != nil {
 		log.Fatal("Error opening db!")
 	} else {
@@ -265,7 +265,7 @@ func GetCountOfArticlesByAuthor(authorID uint) int {
 	return 0
 }
 
-func getLogger() logger.LogLevel {
+func GetLogger() logger.LogLevel {
 	return logger.Silent
 }
 
@@ -273,7 +273,7 @@ func GetLatestArticles() []domain.HabrStats {
 	var stats []domain.HabrStats
 
 	db, err := gorm.Open(sqlite.Open("colligendis.db"),
-		&gorm.Config{Logger: logger.Default.LogMode(getLogger())})
+		&gorm.Config{Logger: logger.Default.LogMode(GetLogger())})
 	if err != nil {
 		log.Fatal("Error opening db!")
 	} else {
@@ -288,7 +288,7 @@ func GetLatestStatsFromArticle(articleID uint, sinceDate time.Time) ([]domain.Ha
 	state := false
 
 	db, err := gorm.Open(sqlite.Open("colligendis.db"),
-		&gorm.Config{Logger: logger.Default.LogMode(getLogger())})
+		&gorm.Config{Logger: logger.Default.LogMode(GetLogger())})
 	if err != nil {
 		log.Fatal("Error opening db!")
 	} else {
@@ -345,7 +345,7 @@ func GetTwoLatestStats() ([]domain.HabrStats, bool) {
 	state := false
 
 	db, err := gorm.Open(sqlite.Open("colligendis.db"),
-		&gorm.Config{Logger: logger.Default.LogMode(getLogger())})
+		&gorm.Config{Logger: logger.Default.LogMode(GetLogger())})
 	if err != nil {
 		log.Fatal("Error opening db!")
 	} else {
@@ -438,7 +438,7 @@ func getCountOfAuthorArticles(id uint) int64 {
 	var count int64
 
 	db, err := gorm.Open(sqlite.Open("colligendis.db"),
-		&gorm.Config{Logger: logger.Default.LogMode(getLogger())})
+		&gorm.Config{Logger: logger.Default.LogMode(GetLogger())})
 	if err != nil {
 		log.Fatal("Error opening db!")
 	} else {
@@ -451,7 +451,7 @@ func GetCountOfStats() int64 {
 	var count int64
 
 	db, err := gorm.Open(sqlite.Open("colligendis.db"),
-		&gorm.Config{Logger: logger.Default.LogMode(getLogger())})
+		&gorm.Config{Logger: logger.Default.LogMode(GetLogger())})
 	if err != nil {
 		log.Fatal("Error opening db!")
 	} else {
@@ -467,7 +467,7 @@ func GetAllDatesOfStats() ([]string, []time.Time) {
 	var timeDates []time.Time
 
 	db, err := gorm.Open(sqlite.Open("colligendis.db"),
-		&gorm.Config{Logger: logger.Default.LogMode(getLogger())})
+		&gorm.Config{Logger: logger.Default.LogMode(GetLogger())})
 	if err != nil {
 		log.Fatal("Error opening db!")
 	} else {

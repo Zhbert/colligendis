@@ -6,7 +6,12 @@ package main
 import (
 	"colligendis/cmd/root"
 	"colligendis/internal/common/structs"
+	"colligendis/internal/db_service"
 	_ "embed"
+	"gorm.io/driver/sqlite"
+	"gorm.io/gorm"
+	"gorm.io/gorm/logger"
+	"log"
 )
 
 //go:embed templates/tex/preamble
@@ -37,5 +42,16 @@ func main() {
 	convertScriptStruct.Data = convertScript
 	tmpls = append(tmpls, convertScriptStruct)
 
-	root.Execute(tmpls)
+	db, err := gorm.Open(sqlite.Open("colligendis.db"),
+		&gorm.Config{Logger: logger.Default.LogMode(db_service.GetLogger())})
+	if err != nil {
+		log.Fatal("Error opening db!\n")
+	}
+
+	defer func() {
+		dbInstance, _ := db.DB()
+		_ = dbInstance.Close()
+	}()
+
+	root.Execute(tmpls, db)
 }

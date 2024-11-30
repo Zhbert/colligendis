@@ -25,10 +25,11 @@ import (
 	"colligendis/cmd/common"
 	"fmt"
 	"github.com/spf13/cobra"
+	"gorm.io/gorm"
 	"log"
 )
 
-func GetViewCommand(flags *common.ColligendisFlags) *cobra.Command {
+func GetViewCommand(flags *common.ColligendisFlags, db *gorm.DB) *cobra.Command {
 	var cmd = &cobra.Command{
 		Use:     "view",
 		Short:   "Displaying various information in the terminal",

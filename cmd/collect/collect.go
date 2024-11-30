@@ -27,6 +27,7 @@ import (
 	"colligendis/internal/db_service"
 	"colligendis/internal/latex_service"
 	"github.com/spf13/cobra"
+	"gorm.io/gorm"
 	"log"
 	"strconv"
 	"time"
@@ -37,7 +38,7 @@ const (
 		"First, you need to load statistics into the database using the load command."
 )
 
-func GetCollectCommand(flags *common.ColligendisFlags, tmpls []structs.TemplateStruct) *cobra.Command {
+func GetCollectCommand(flags *common.ColligendisFlags, tmpls []structs.TemplateStruct, db *gorm.DB) *cobra.Command {
 	var cmd = &cobra.Command{
 		Use:     "collect",
 		Short:   "Сollect statistics from loaded sources.",

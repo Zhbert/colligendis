@@ -26,6 +26,7 @@ import (
 	"colligendis/internal/db_service"
 	"fmt"
 	"github.com/spf13/cobra"
+	"gorm.io/gorm"
 	"io/fs"
 	"log"
 	"os"
@@ -34,7 +35,7 @@ import (
 	"time"
 )
 
-func GetLoadCommand(flags *common.ColligendisFlags) *cobra.Command {
+func GetLoadCommand(flags *common.ColligendisFlags, db *gorm.DB) *cobra.Command {
 	var cmd = &cobra.Command{
 		Use:     "load",
 		Short:   "Load statistics from sources",
