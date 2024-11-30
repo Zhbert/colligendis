@@ -28,7 +28,6 @@ import (
 	"colligendis/internal/date_service"
 	"colligendis/internal/db_service/domain"
 	"errors"
-	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
 	"gorm.io/gorm/logger"
@@ -40,55 +39,51 @@ import (
 	"time"
 )
 
-func SaveToDB(articles []structs.HabrArticle, dateOfStats time.Time, flags *common.ColligendisFlags) bool {
+func SaveToDB(articles []structs.HabrArticle, dateOfStats time.Time, flags *common.ColligendisFlags, db *gorm.DB) bool {
 	createDBIfNotExists()
-	db, err := gorm.Open(sqlite.Open("colligendis.db"),
-		&gorm.Config{Logger: logger.Default.LogMode(GetLogger())})
-	if err != nil {
-		log.Fatal("Error opening db!")
-	} else {
-		err := db.AutoMigrate(&domain.HabrArticle{}, &domain.HabrHub{}, &domain.HabrAuthor{}, &domain.HabrStats{})
-		if err != nil {
-			log.Fatal("Error migrating DB")
-			return false
-		}
-		for i := 0; i < len(articles); i++ {
-			var inDBArt domain.HabrArticle
-			result := db.Where("habr_number = ?", articles[i].HabrNumber).First(&inDBArt)
-			if errors.Is(result.Error, gorm.ErrRecordNotFound) {
-				if flags.ViewMode {
-					log.Println("Create article: ", articles[i].Name)
-				}
-				newArticle := createNewArticleEntity(&articles[i], db, flags)
-				db.Create(&newArticle)
-				inDBArt = newArticle
-				if flags.ViewMode {
-					log.Printf("Article created: %s \n", newArticle.Name)
-				}
-			}
 
-			var st domain.HabrStats
-			result = db.Where("date_of_stats = ?", dateOfStats).
-				Where("habr_article_id = ?", inDBArt.ID).First(&st)
-			if errors.Is(result.Error, gorm.ErrRecordNotFound) {
-				st.Saves = articles[i].Saves
-				st.Views = articles[i].Views
-				st.Comments = articles[i].Comments
-				st.HabrArticle = inDBArt
-				st.LikesAll = articles[i].LikesAll
-				st.Likes = articles[i].Likes
-				st.LikesDown = articles[i].LikesDown
-				st.LikesUp = articles[i].LikesUp
-				st.DateOfStats = dateOfStats
-				db.Save(&st)
-			} else {
-				if flags.ViewMode {
-					log.Printf("The statistics of %s for %s have already been saved.",
-						strconv.Itoa(inDBArt.HabrNumber), dateOfStats)
-				}
+	err := db.AutoMigrate(&domain.HabrArticle{}, &domain.HabrHub{}, &domain.HabrAuthor{}, &domain.HabrStats{})
+	if err != nil {
+		log.Fatal("Error migrating DB")
+		return false
+	}
+	for i := 0; i < len(articles); i++ {
+		var inDBArt domain.HabrArticle
+		result := db.Where("habr_number = ?", articles[i].HabrNumber).First(&inDBArt)
+		if errors.Is(result.Error, gorm.ErrRecordNotFound) {
+			if flags.ViewMode {
+				log.Println("Create article: ", articles[i].Name)
+			}
+			newArticle := createNewArticleEntity(&articles[i], db, flags)
+			db.Create(&newArticle)
+			inDBArt = newArticle
+			if flags.ViewMode {
+				log.Printf("Article created: %s \n", newArticle.Name)
+			}
+		}
+
+		var st domain.HabrStats
+		result = db.Where("date_of_stats = ?", dateOfStats).
+			Where("habr_article_id = ?", inDBArt.ID).First(&st)
+		if errors.Is(result.Error, gorm.ErrRecordNotFound) {
+			st.Saves = articles[i].Saves
+			st.Views = articles[i].Views
+			st.Comments = articles[i].Comments
+			st.HabrArticle = inDBArt
+			st.LikesAll = articles[i].LikesAll
+			st.Likes = articles[i].Likes
+			st.LikesDown = articles[i].LikesDown
+			st.LikesUp = articles[i].LikesUp
+			st.DateOfStats = dateOfStats
+			db.Save(&st)
+		} else {
+			if flags.ViewMode {
+				log.Printf("The statistics of %s for %s have already been saved.",
+					strconv.Itoa(inDBArt.HabrNumber), dateOfStats)
 			}
 		}
 	}
+
 	return true
 }
 
@@ -136,19 +131,14 @@ func getAuthor(db *gorm.DB, name string, flags *common.ColligendisFlags) domain.
 	}
 }
 
-func getAuthorByID(id uint) domain.HabrAuthor {
+func getAuthorByID(id uint, db *gorm.DB) domain.HabrAuthor {
 	var author domain.HabrAuthor
 
-	db, err := gorm.Open(sqlite.Open("colligendis.db"),
-		&gorm.Config{Logger: logger.Default.LogMode(GetLogger())})
-	if err != nil {
-		log.Fatal("Error opening db!")
-	} else {
-		result := db.Where("id = ?", id).First(&author)
-		if errors.Is(result.Error, gorm.ErrRecordNotFound) {
-			log.Println("There is no such author")
-		}
+	result := db.Where("id = ?", id).First(&author)
+	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
+		log.Println("There is no such author")
 	}
+
 	return author
 }
 
@@ -285,11 +275,11 @@ func GetLatestStatsFromArticle(articleID uint, sinceDate time.Time, db *gorm.DB)
 }
 
 func GetHabrViewsCount(sinceDate time.Time, db *gorm.DB) int {
-	articles := GetAllHabrArticles("")
+	articles := GetAllHabrArticles("", db)
 	count := 0
 
 	for i := 0; i < len(articles); i++ {
-		stats, state := GetLatestStatsFromArticle(articles[i].ID, sinceDate)
+		stats, state := GetLatestStatsFromArticle(articles[i].ID, sinceDate, db)
 		if state {
 			if len(stats) > 1 {
 				diff := stats[1].Views - stats[0].Views
@@ -321,7 +311,7 @@ func GetArticlesFormLastPeriod(dt time.Time, getAll bool, global bool, db *gorm.
 	dt = dt.AddDate(0, 0, -1)
 	count := 0
 	var latestArts []structs.StatsArticle
-	articles := GetAllHabrArticles("")
+	articles := GetAllHabrArticles("", db)
 	for i := 0; i < len(articles); i++ {
 		var zeroTime time.Time
 		stats, state := GetLatestStatsFromArticle(articles[i].ID, zeroTime, db)
@@ -330,7 +320,7 @@ func GetArticlesFormLastPeriod(dt time.Time, getAll bool, global bool, db *gorm.
 			stat.Id = i
 			stat.Name = text.CleanText(articles[i].Name)
 			stat.Date = articles[i].DateOfPublication
-			stat.Author = getAuthorByID(articles[i].Author.ID)
+			stat.Author = getAuthorByID(articles[i].Author.ID, db)
 			stat.Author.Name = text.CleanText(stat.Author.Name)
 			stat.DayBefore = date_service.GetDaysBefore(articles[i].DateOfPublication, time.Now())
 			if len(stats) > 1 {
@@ -378,7 +368,7 @@ func GetTopOfAuthors(sortName bool, db *gorm.DB) []structs.AuthorsTop {
 	for i := 0; i < len(authors); i++ {
 		var t structs.AuthorsTop
 		t.Name = text.CleanText(authors[i].Name)
-		t.ArticlesCount = getCountOfAuthorArticles(authors[i].ID)
+		t.ArticlesCount = getCountOfAuthorArticles(authors[i].ID, db)
 		top = append(top, t)
 	}
 
@@ -391,16 +381,11 @@ func GetTopOfAuthors(sortName bool, db *gorm.DB) []structs.AuthorsTop {
 	return top
 }
 
-func getCountOfAuthorArticles(id uint) int64 {
+func getCountOfAuthorArticles(id uint, db *gorm.DB) int64 {
 	var count int64
 
-	db, err := gorm.Open(sqlite.Open("colligendis.db"),
-		&gorm.Config{Logger: logger.Default.LogMode(GetLogger())})
-	if err != nil {
-		log.Fatal("Error opening db!")
-	} else {
-		db.Model(&domain.HabrArticle{}).Where("author_id = ?", id).Count(&count)
-	}
+	db.Model(&domain.HabrArticle{}).Where("author_id = ?", id).Count(&count)
+
 	return count
 }
 
@@ -432,7 +417,7 @@ func GetAllStatsAndDatesForDiagram(db *gorm.DB) ([]structs.StatsForDiagram, floa
 	var statsForDiagram []structs.StatsForDiagram
 
 	_, dates := GetAllDatesOfStats(db)
-	articles := GetAllHabrArticles("")
+	articles := GetAllHabrArticles("", db)
 
 	for i := 0; i < len(dates); i++ {
 		var st structs.StatsForDiagram
@@ -440,7 +425,7 @@ func GetAllStatsAndDatesForDiagram(db *gorm.DB) ([]structs.StatsForDiagram, floa
 
 		st.Count = 0
 		for y := 0; y < len(articles); y++ {
-			stats, state := GetLatestStatsFromArticle(articles[y].ID, dates[i])
+			stats, state := GetLatestStatsFromArticle(articles[y].ID, dates[i], db)
 			if state {
 				if len(stats) > 1 {
 					diff := stats[1].Views - stats[0].Views
