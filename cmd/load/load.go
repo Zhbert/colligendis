@@ -26,6 +26,7 @@ import (
 	"colligendis/internal/db_service"
 	"fmt"
 	"github.com/spf13/cobra"
+	"gorm.io/gorm"
 	"io/fs"
 	"log"
 	"os"
@@ -34,7 +35,7 @@ import (
 	"time"
 )
 
-func GetLoadCommand(flags *common.ColligendisFlags) *cobra.Command {
+func GetLoadCommand(flags *common.ColligendisFlags, db *gorm.DB) *cobra.Command {
 	var cmd = &cobra.Command{
 		Use:     "load",
 		Short:   "Load statistics from sources",
@@ -43,7 +44,7 @@ func GetLoadCommand(flags *common.ColligendisFlags) *cobra.Command {
 		Run: func(cmd *cobra.Command, args []string) {
 			if flags.Habr {
 				if flags.FromCSV != "" && !flags.AllCSV {
-					processFile(flags.FromCSV, flags)
+					processFile(flags.FromCSV, flags, db)
 				}
 				if flags.AllCSV {
 					currentDirectory, err := os.Getwd()
@@ -57,7 +58,7 @@ func GetLoadCommand(flags *common.ColligendisFlags) *cobra.Command {
 						var processedCount = 0
 						for _, csvFile := range findCsvFiles(currentDirectory, ".csv") {
 							allCount++
-							processedCount += processFile(csvFile, flags)
+							processedCount += processFile(csvFile, flags, db)
 						}
 						fmt.Printf("All CSV files founded: %d\nProcessed files: %d\nFiles with errors: %d\n", allCount, processedCount, allCount-processedCount)
 					}
@@ -100,14 +101,14 @@ func findCsvFiles(pathToDir, ext string) []string {
 	return a
 }
 
-func processFile(csvFile string, flags *common.ColligendisFlags) int {
+func processFile(csvFile string, flags *common.ColligendisFlags, db *gorm.DB) int {
 	start := time.Now()
 	if flags.ViewMode {
 		log.Printf("Parsing file %s... \n", csvFile)
 	}
 	articles := loadHabrFromFile(csvFile)
 	if articles != nil {
-		if db_service.SaveToDB(articles, getStatsDate(csvFile), flags) {
+		if db_service.SaveToDB(articles, getStatsDate(csvFile), flags, db) {
 			if flags.ViewMode {
 				duration := time.Since(start)
 				log.Printf("The file '%s' has been processed in %s \n", csvFile, duration)

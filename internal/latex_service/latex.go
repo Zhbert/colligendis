@@ -7,6 +7,7 @@ import (
 	"colligendis/internal/csv_service"
 	"colligendis/internal/db_service"
 	"fmt"
+	"gorm.io/gorm"
 	"html/template"
 	"io"
 	"log"
@@ -16,7 +17,7 @@ import (
 	"time"
 )
 
-func GenerateLaTeXFiles(tmpls []structs.TemplateStruct, flags *common.ColligendisFlags) {
+func GenerateLaTeXFiles(tmpls []structs.TemplateStruct, flags *common.ColligendisFlags, db *gorm.DB) {
 
 	checkAndCreateTmpFolder()
 	checkAndCreatePDFsFolder()
@@ -32,7 +33,7 @@ func GenerateLaTeXFiles(tmpls []structs.TemplateStruct, flags *common.Colligendi
 		}
 	}
 
-	templateData := getHabrData()
+	templateData := getHabrData(db)
 
 	err := createFileByTemplate("tmp/stats.tmpl", "tmp/stats.tex", templateData)
 	if err != nil {
@@ -46,37 +47,37 @@ func GenerateLaTeXFiles(tmpls []structs.TemplateStruct, flags *common.Colligendi
 	}
 }
 
-func getHabrData() structs.TemplateData {
+func getHabrData(db *gorm.DB) structs.TemplateData {
 	var data structs.TemplateData
 
 	data.Version = version.GetVersion()
 
-	data.StatsInBaseCount = db_service.GetCountOfStats()
+	data.StatsInBaseCount = db_service.GetCountOfStats(db)
 	var zeroTime time.Time
-	data.AllViewsCount = db_service.GetHabrViewsCount(zeroTime)
-	data.PreviousDate, data.LatestDate = getDates()
-	data.ArticlesCount = db_service.GetHabrArticlesCount()
+	data.AllViewsCount = db_service.GetHabrViewsCount(zeroTime, db)
+	data.PreviousDate, data.LatestDate = getDates(db)
+	data.ArticlesCount = db_service.GetHabrArticlesCount(db)
 	pd, _ := time.Parse("2006-01-02", data.PreviousDate)
-	data.CountOfLastArticles, data.LatestArticlesFromWeek = db_service.GetArticlesFormLastPeriod(pd, false, false)
-	data.AuthorsCount = getAuthorsCount()
-	_, data.AllArticlesPerWeek = db_service.GetArticlesFormLastPeriod(pd, true, false)
+	data.CountOfLastArticles, data.LatestArticlesFromWeek = db_service.GetArticlesFormLastPeriod(pd, false, false, db)
+	data.AuthorsCount = getAuthorsCount(db)
+	_, data.AllArticlesPerWeek = db_service.GetArticlesFormLastPeriod(pd, true, false, db)
 	data.AllArticlesPerWeek = data.AllArticlesPerWeek[0:5]
-	_, data.AllArticlesGlobalWithLimit = db_service.GetArticlesFormLastPeriod(pd, true, true)
+	_, data.AllArticlesGlobalWithLimit = db_service.GetArticlesFormLastPeriod(pd, true, true, db)
 	data.AllArticlesGlobalWithLimit = data.AllArticlesGlobalWithLimit[0:5]
-	_, data.AllArticlesGlobal = db_service.GetArticlesFormLastPeriod(pd, true, false)
-	data.AuthorsTopGlobal = db_service.GetTopOfAuthors(false)
+	_, data.AllArticlesGlobal = db_service.GetArticlesFormLastPeriod(pd, true, false, db)
+	data.AuthorsTopGlobal = db_service.GetTopOfAuthors(false, db)
 	data.AuthorsTopGlobal = data.AuthorsTopGlobal[0:5]
-	data.Authors = db_service.GetTopOfAuthors(true)
-	data.AllDates, _ = db_service.GetAllDatesOfStats()
-	data.StatsForDiagram, data.WeeksCount = db_service.GetAllStatsAndDatesForDiagram()
+	data.Authors = db_service.GetTopOfAuthors(true, db)
+	data.AllDates, _ = db_service.GetAllDatesOfStats(db)
+	data.StatsForDiagram, data.WeeksCount = db_service.GetAllStatsAndDatesForDiagram(db)
 
 	csv_service.PrepareCSV("tmp", "articlesCount.csv", data.StatsForDiagram)
 
 	return data
 }
 
-func getDates() (string, string) {
-	stats, state := db_service.GetTwoLatestStats()
+func getDates(db *gorm.DB) (string, string) {
+	stats, state := db_service.GetTwoLatestStats(db)
 	if state {
 		switch len(stats) {
 		case 0:
@@ -95,8 +96,8 @@ func getDates() (string, string) {
 	return "", ""
 }
 
-func getAuthorsCount() int {
-	return len(db_service.GetAllHabrAutors(""))
+func getAuthorsCount(db *gorm.DB) int {
+	return len(db_service.GetAllHabrAutors("", db))
 }
 
 func generatePDF(flags *common.ColligendisFlags) {

@@ -6,12 +6,13 @@ import (
 	"colligendis/internal/common/structs"
 	"fmt"
 	"github.com/spf13/cobra"
+	"gorm.io/gorm"
 	"log"
 	"os"
 	"path/filepath"
 )
 
-func GetConvertCommand(flags *common.ColligendisFlags, tmpls []structs.TemplateStruct) *cobra.Command {
+func GetConvertCommand(flags *common.ColligendisFlags, tmpls []structs.TemplateStruct, db *gorm.DB) *cobra.Command {
 	var cmd = &cobra.Command{
 		Use:     "convert",
 		Short:   "Command for automatic conversion of CSV files",

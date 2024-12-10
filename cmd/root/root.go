@@ -30,32 +30,33 @@ import (
 	"colligendis/cmd/version"
 	"colligendis/cmd/view"
 	"colligendis/internal/common/structs"
+	"gorm.io/gorm"
 	"os"
 
 	"github.com/spf13/cobra"
 )
 
-func Execute(tmpls []structs.TemplateStruct) {
+func Execute(tmpls []structs.TemplateStruct, db *gorm.DB) {
 	var flags common.ColligendisFlags
-	rootCmd := createRootCommand(&flags, tmpls)
+	rootCmd := createRootCommand(&flags, tmpls, db)
 	err := rootCmd.Execute()
 	if err != nil {
 		os.Exit(1)
 	}
 }
 
-func createRootCommand(flags *common.ColligendisFlags, tmpls []structs.TemplateStruct) *cobra.Command {
+func createRootCommand(flags *common.ColligendisFlags, tmpls []structs.TemplateStruct, db *gorm.DB) *cobra.Command {
 	var cmd = &cobra.Command{
 		Use:   "colligendis",
 		Short: "Statistics management application",
 		Long:  `A command-line utility for obtaining various statistics and reports on it.`,
 	}
-	cmd.AddCommand(collect.GetCollectCommand(flags, tmpls))
-	cmd.AddCommand(load.GetLoadCommand(flags))
-	cmd.AddCommand(config.GetConfigCommand(flags))
-	cmd.AddCommand(view.GetViewCommand(flags))
-	cmd.AddCommand(version.GetVersionCommand(flags))
-	cmd.AddCommand(convert.GetConvertCommand(flags, tmpls))
+	cmd.AddCommand(collect.GetCollectCommand(flags, tmpls, db))
+	cmd.AddCommand(load.GetLoadCommand(flags, db))
+	cmd.AddCommand(config.GetConfigCommand(flags, db))
+	cmd.AddCommand(view.GetViewCommand(flags, db))
+	cmd.AddCommand(version.GetVersionCommand())
+	cmd.AddCommand(convert.GetConvertCommand(flags, tmpls, db))
 
 	cmd.PersistentFlags().BoolVarP(&flags.ViewMode, "verbose", "v", false, "Show the full report of the commands")
 	cmd.PersistentFlags().BoolVarP(&flags.DryRun, "dry-run", "", false, "Start command without real generation")
