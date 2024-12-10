@@ -28,7 +28,6 @@ import (
 	"fmt"
 	"github.com/jedib0t/go-pretty/v6/table"
 	"gorm.io/gorm"
-	"log"
 	"os"
 	"sort"
 	"strconv"
@@ -47,23 +46,19 @@ func getFullHabrViewsCount(limit int, sortType string, db *gorm.DB) []structs.St
 
 	for i := 0; i < len(articles); i++ {
 		var zeroTime time.Time
-		stats, state := db_service.GetLatestStatsFromArticle(articles[i].ID, zeroTime, db)
+		stats := db_service.GetLatestStatsFromArticle(articles[i].ID, zeroTime, db)
 		var stat structs.StatsArticle
-		if state {
-			stat.Id = i
-			stat.Name = articles[i].Name
-			stat.Date = articles[i].DateOfPublication
-			if len(stats) > 1 {
-				stat.Views = stats[1].Views
-				stat.Growth = stats[1].Views - stats[0].Views
-			} else if len(stats) == 1 {
-				stat.Views = stats[0].Views
-				stat.Growth = stats[0].Views
-			}
-			rowStructs = append(rowStructs, stat)
-		} else {
-			log.Println("There are no stats in database!")
+		stat.Id = i
+		stat.Name = articles[i].Name
+		stat.Date = articles[i].DateOfPublication
+		if len(stats) > 1 {
+			stat.Views = stats[1].Views
+			stat.Growth = stats[1].Views - stats[0].Views
+		} else if len(stats) == 1 {
+			stat.Views = stats[0].Views
+			stat.Growth = stats[0].Views
 		}
+		rowStructs = append(rowStructs, stat)
 	}
 
 	if sortType == "views" {

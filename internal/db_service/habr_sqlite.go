@@ -246,7 +246,7 @@ func GetLatestArticles(db *gorm.DB) []domain.HabrStats {
 	return stats
 }
 
-func GetLatestStatsFromArticle(articleID uint, sinceDate time.Time, db *gorm.DB) ([]domain.HabrStats, bool) {
+func GetLatestStatsFromArticle(articleID uint, sinceDate time.Time, db *gorm.DB) []domain.HabrStats {
 	var stats []domain.HabrStats
 
 	if !sinceDate.IsZero() {
@@ -268,10 +268,10 @@ func GetLatestStatsFromArticle(articleID uint, sinceDate time.Time, db *gorm.DB)
 		var newStats []domain.HabrStats
 		newStats = append(newStats, stats[1])
 		newStats = append(newStats, stats[0])
-		return newStats, true
+		return newStats
 	}
 
-	return stats, false
+	return stats
 }
 
 func GetHabrViewsCount(sinceDate time.Time, db *gorm.DB) int {
@@ -279,16 +279,13 @@ func GetHabrViewsCount(sinceDate time.Time, db *gorm.DB) int {
 	count := 0
 
 	for i := 0; i < len(articles); i++ {
-		stats, state := GetLatestStatsFromArticle(articles[i].ID, sinceDate, db)
-		if state {
-			if len(stats) > 1 {
-				diff := stats[1].Views - stats[0].Views
-				count = count + diff
-			} else if len(stats) == 1 {
-				count = count + stats[0].Views
-			}
-		} else {
-			log.Println("There are no stats in database!")
+		stats := GetLatestStatsFromArticle(articles[i].ID, sinceDate, db)
+
+		if len(stats) > 1 {
+			diff := stats[1].Views - stats[0].Views
+			count = count + diff
+		} else if len(stats) == 1 {
+			count = count + stats[0].Views
 		}
 	}
 
@@ -314,24 +311,20 @@ func GetArticlesFormLastPeriod(dt time.Time, getAll bool, global bool, db *gorm.
 	articles := GetAllHabrArticles("", db)
 	for i := 0; i < len(articles); i++ {
 		var zeroTime time.Time
-		stats, state := GetLatestStatsFromArticle(articles[i].ID, zeroTime, db)
+		stats := GetLatestStatsFromArticle(articles[i].ID, zeroTime, db)
 		var stat structs.StatsArticle
-		if state {
-			stat.Id = i
-			stat.Name = text.CleanText(articles[i].Name)
-			stat.Date = articles[i].DateOfPublication
-			stat.Author = getAuthorByID(articles[i].Author.ID, db)
-			stat.Author.Name = text.CleanText(stat.Author.Name)
-			stat.DayBefore = date_service.GetDaysBefore(articles[i].DateOfPublication, time.Now())
-			if len(stats) > 1 {
-				stat.Views = stats[1].Views
-				stat.Growth = stats[1].Views - stats[0].Views
-			} else if len(stats) == 1 {
-				stat.Views = stats[0].Views
-				stat.Growth = stats[0].Views
-			}
-		} else {
-			log.Println("There are no stats in database!")
+		stat.Id = i
+		stat.Name = text.CleanText(articles[i].Name)
+		stat.Date = articles[i].DateOfPublication
+		stat.Author = getAuthorByID(articles[i].Author.ID, db)
+		stat.Author.Name = text.CleanText(stat.Author.Name)
+		stat.DayBefore = date_service.GetDaysBefore(articles[i].DateOfPublication, time.Now())
+		if len(stats) > 1 {
+			stat.Views = stats[1].Views
+			stat.Growth = stats[1].Views - stats[0].Views
+		} else if len(stats) == 1 {
+			stat.Views = stats[0].Views
+			stat.Growth = stats[0].Views
 		}
 		if !getAll {
 			if articles[i].DateOfPublication.After(dt) {
@@ -425,16 +418,12 @@ func GetAllStatsAndDatesForDiagram(db *gorm.DB) ([]structs.StatsForDiagram, floa
 
 		st.Count = 0
 		for y := 0; y < len(articles); y++ {
-			stats, state := GetLatestStatsFromArticle(articles[y].ID, dates[i], db)
-			if state {
-				if len(stats) > 1 {
-					diff := stats[1].Views - stats[0].Views
-					st.Count = st.Count + diff
-				} else if len(stats) == 1 {
-					st.Count = st.Count + stats[0].Views
-				}
-			} else {
-				log.Println("There are no stats in database!")
+			stats := GetLatestStatsFromArticle(articles[y].ID, dates[i], db)
+			if len(stats) > 1 {
+				diff := stats[1].Views - stats[0].Views
+				st.Count = st.Count + diff
+			} else if len(stats) == 1 {
+				st.Count = st.Count + stats[0].Views
 			}
 		}
 
