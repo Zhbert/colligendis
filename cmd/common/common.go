@@ -32,6 +32,7 @@ type ColligendisFlags struct {
 	FromCSV          string
 	ViewHabrArticles bool
 	ViewHabrAuthors  bool
+	ViewStatsDates   bool
 	SortType         string
 	ViewMode         bool
 	Limit            int

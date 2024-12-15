@@ -23,6 +23,7 @@ package view
 
 import (
 	"colligendis/cmd/common"
+	"colligendis/internal/db_service"
 	"fmt"
 	"github.com/spf13/cobra"
 	"gorm.io/gorm"
@@ -70,6 +71,11 @@ func getViewHabrArticlesCommand(flags *common.ColligendisFlags, db *gorm.DB) *co
 				default:
 					log.Fatal("You need to specify the sort type: name, date")
 				}
+			} else if flags.ViewStatsDates {
+				dates, _ := db_service.GetAllDatesOfStats(db)
+				for _, st := range dates {
+					fmt.Println(st)
+				}
 			} else {
 				log.Println("Select the display type: articles, authors")
 			}
@@ -77,6 +83,7 @@ func getViewHabrArticlesCommand(flags *common.ColligendisFlags, db *gorm.DB) *co
 	}
 	cmd.Flags().BoolVarP(&flags.ViewHabrArticles, "articles", "", false, "Show all articles")
 	cmd.Flags().BoolVarP(&flags.ViewHabrAuthors, "authors", "", false, "Show all authors")
+	cmd.Flags().BoolVarP(&flags.ViewStatsDates, "dates-of-stats", "", false, "Show all dates from BD with stats")
 	cmd.Flags().StringVarP(&flags.SortType, "sort", "s", "", "Output sorting filter")
 	return cmd
 }
