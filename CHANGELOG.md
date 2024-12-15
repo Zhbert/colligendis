@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [unreleased]
+
+### Features
+
+- *(tui)* Add command for view all dates from stats in DB (#36)
+
 ## [0.3.2] - 2024-12-10
 
 ### Fixes
