@@ -434,3 +434,28 @@ func GetAllStatsAndDatesForDiagram(db *gorm.DB) ([]structs.StatsForDiagram, floa
 
 	return statsForDiagram, weeks
 }
+
+func GetEachArticleStats(db *gorm.DB) []structs.EachArticleStat {
+	articles := GetAllHabrArticles("", db)
+	_, dates := GetAllDatesOfStats(db)
+	var eachArticleStats []structs.EachArticleStat
+
+	for i := 0; i < len(articles); i++ {
+		var eas structs.EachArticleStat
+		eas.Name = articles[i].Name
+		eas.HabrNumber = articles[i].HabrNumber
+		for y := 0; y < len(dates); y++ {
+			var st structs.StatsForDiagram
+			st.Date = dates[y].Format("2006-01-02")
+			stats := GetLatestStatsFromArticle(articles[i].ID, dates[y], db)
+			if len(stats) > 1 {
+				st.Count = stats[1].Views - stats[0].Views
+			} else if len(stats) == 1 {
+				st.Count = stats[0].Views
+			}
+			eas.Stats = append(eas.Stats, st)
+		}
+		eachArticleStats = append(eachArticleStats, eas)
+	}
+	return eachArticleStats
+}
