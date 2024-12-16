@@ -71,13 +71,37 @@ func getHabrData(db *gorm.DB) structs.TemplateData {
 	data.Authors = db_service.GetTopOfAuthors(true, db)
 	data.AllDates, _ = db_service.GetAllDatesOfStats(db)
 	data.StatsForDiagram, data.WeeksCount = db_service.GetAllStatsAndDatesForDiagram(db)
-	data.EachArticleStats = db_service.GetEachArticleStats(db)
+	data.EachArticleStats = prepareDataForEachArticles(db)
 
 	csv_service.PrepareCSV("tmp", "articlesCount.csv", data.StatsForDiagram)
 
-	for i := 0; i < len(data.EachArticleStats); i++ {
-		fileName := strconv.Itoa(data.EachArticleStats[i].HabrNumber) + ".csv"
-		csv_service.PrepareCSV("tmp", fileName, data.EachArticleStats[i].Stats)
+	return data
+}
+
+func prepareDataForEachArticles(db *gorm.DB) [][]structs.EachArticleStat {
+	var data [][]structs.EachArticleStat
+	eas := db_service.GetEachArticleStats(db)
+
+	latest := 0
+	for i := 0; i < len(eas); i++ {
+		fileName := strconv.Itoa(eas[i].HabrNumber) + ".csv"
+		csv_service.PrepareCSV("tmp", fileName, eas[i].Stats)
+
+		if i > latest || i == 0 {
+			fmt.Println(i)
+			var tmp []structs.EachArticleStat
+			tmp = append(tmp, eas[i])
+			if i+1 < len(eas) {
+				tmp = append(tmp, eas[i+1])
+				latest = i + 1
+			}
+			if i+2 < len(eas) {
+				tmp = append(tmp, eas[i+2])
+				latest = i + 2
+			}
+			data = append(data, tmp)
+			fmt.Println("Latest = " + strconv.Itoa(latest))
+		}
 	}
 
 	return data

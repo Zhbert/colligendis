@@ -79,7 +79,7 @@ type TemplateData struct {
 	AllDates                   []string
 	StatsForDiagram            []StatsForDiagram
 	WeeksCount                 float64
-	EachArticleStats           []EachArticleStat
+	EachArticleStats           [][]EachArticleStat
 }
 
 type AuthorsTop struct {
