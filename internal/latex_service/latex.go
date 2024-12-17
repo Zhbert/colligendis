@@ -14,6 +14,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"strconv"
 	"time"
 )
 
@@ -70,8 +71,36 @@ func getHabrData(db *gorm.DB) structs.TemplateData {
 	data.Authors = db_service.GetTopOfAuthors(true, db)
 	data.AllDates, _ = db_service.GetAllDatesOfStats(db)
 	data.StatsForDiagram, data.WeeksCount = db_service.GetAllStatsAndDatesForDiagram(db)
+	data.EachArticleStats = prepareDataForEachArticles(db)
 
 	csv_service.PrepareCSV("tmp", "articlesCount.csv", data.StatsForDiagram)
+
+	return data
+}
+
+func prepareDataForEachArticles(db *gorm.DB) [][]structs.EachArticleStat {
+	var data [][]structs.EachArticleStat
+	eas := db_service.GetEachArticleStats(db)
+
+	latest := 0
+	for i := 0; i < len(eas); i++ {
+		fileName := "habr-csv-" + strconv.Itoa(eas[i].HabrNumber) + ".csv"
+		csv_service.PrepareCSV("tmp", fileName, eas[i].Stats)
+
+		if i > latest || i == 0 {
+			var tmp []structs.EachArticleStat
+			tmp = append(tmp, eas[i])
+			if i+1 < len(eas) {
+				tmp = append(tmp, eas[i+1])
+				latest = i + 1
+			}
+			if i+2 < len(eas) {
+				tmp = append(tmp, eas[i+2])
+				latest = i + 2
+			}
+			data = append(data, tmp)
+		}
+	}
 
 	return data
 }

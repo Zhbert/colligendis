@@ -128,6 +128,43 @@
                         \addplot table [col sep=comma,x=date,y=count] {articlesCount.csv};
                     \end{axis}
                 \end{tikzpicture}
+            \subsubsection{Графики просмотров для каждой статьи в блоге}
+                {{ range .EachArticleStats }}
+                \begin{tikzpicture}
+                    \begin{axis}[
+                        xlabel={Дата статистики},
+                        ylabel={Кол-во просмотров},
+                        scaled ticks=false,
+                        legend pos = north west,
+                        table/col sep = semicolon,
+                        width = 0.85\paperwidth,
+                        grid = major,
+                        date coordinates in=x,
+                        date ZERO=2024-05-01,   % <-- needs to be set for v1.12 and below
+                        xtick=data,
+                        xticklabel style={
+                        rotate=90,
+                        anchor=near xticklabel,
+                        },
+                        yticklabel style={/pgf/number format/fixed},
+                        % set the label style of the `xtick's
+                        xticklabel=\day.\month.\year,
+                        ]
+                        {{ range . }}
+                        \addplot table [col sep=comma,x=date,y=count] {habr-csv-{{ .HabrNumber }}.csv};
+                        \addlegendentry{ {{ .HabrNumber }} }
+                        {{ end }}
+                    \end{axis}
+                \end{tikzpicture}
+
+                Статьи на графике:
+                \begin{itemize}
+                \setlength{\itemsep}{-2mm}
+                {{ range . }}
+                    \item {{ .HabrNumber }} --- {{ .Name }}
+                {{ end }}
+                \end{itemize}
+                {{ end }}
     \section{Системная информация}
         \subsection{Хабр}
             Всего записей статистики в базе данных: {{ .StatsInBaseCount }}:

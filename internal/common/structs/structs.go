@@ -79,6 +79,7 @@ type TemplateData struct {
 	AllDates                   []string
 	StatsForDiagram            []StatsForDiagram
 	WeeksCount                 float64
+	EachArticleStats           [][]EachArticleStat
 }
 
 type AuthorsTop struct {
@@ -90,4 +91,10 @@ type AuthorsTop struct {
 type StatsForDiagram struct {
 	Date  string
 	Count int
+}
+
+type EachArticleStat struct {
+	Name       string
+	HabrNumber int
+	Stats      []StatsForDiagram
 }
