@@ -129,6 +129,7 @@
                     \end{axis}
                 \end{tikzpicture}
             \subsubsection{Графики просмотров для каждой статьи в блоге}
+                {{ range .EachArticleStats }}
                 \begin{tikzpicture}
                     \begin{axis}[
                         xlabel={Дата статистики},
@@ -150,10 +151,12 @@
                         xticklabel=\day.\month.\year,
                         ]
                         \legend{Просмоты за период (неделя)};
-                        \addplot table [col sep=comma,x=date,y=count] {329830.csv};
-                        \addplot table [col sep=comma,x=date,y=count] {330198.csv};
+                        {{ range . }}
+                        \addplot table [col sep=comma,x=date,y=count] {habr-csv-{{ .HabrNumber }}.csv};
+                        {{ end }}
                     \end{axis}
                 \end{tikzpicture}
+                {{ end }}
     \section{Системная информация}
         \subsection{Хабр}
             Всего записей статистики в базе данных: {{ .StatsInBaseCount }}:

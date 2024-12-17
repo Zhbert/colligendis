@@ -84,11 +84,10 @@ func prepareDataForEachArticles(db *gorm.DB) [][]structs.EachArticleStat {
 
 	latest := 0
 	for i := 0; i < len(eas); i++ {
-		fileName := strconv.Itoa(eas[i].HabrNumber) + ".csv"
+		fileName := "habr-csv-" + strconv.Itoa(eas[i].HabrNumber) + ".csv"
 		csv_service.PrepareCSV("tmp", fileName, eas[i].Stats)
 
 		if i > latest || i == 0 {
-			fmt.Println(i)
 			var tmp []structs.EachArticleStat
 			tmp = append(tmp, eas[i])
 			if i+1 < len(eas) {
@@ -100,7 +99,6 @@ func prepareDataForEachArticles(db *gorm.DB) [][]structs.EachArticleStat {
 				latest = i + 2
 			}
 			data = append(data, tmp)
-			fmt.Println("Latest = " + strconv.Itoa(latest))
 		}
 	}
 
