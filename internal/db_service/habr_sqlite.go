@@ -442,7 +442,7 @@ func GetEachArticleStats(db *gorm.DB) []structs.EachArticleStat {
 
 	for i := 0; i < len(articles); i++ {
 		var eas structs.EachArticleStat
-		eas.Name = articles[i].Name
+		eas.Name = text.CleanText(articles[i].Name)
 		eas.HabrNumber = articles[i].HabrNumber
 		for y := 0; y < len(dates); y++ {
 			var st structs.StatsForDiagram

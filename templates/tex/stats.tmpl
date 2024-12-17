@@ -150,12 +150,20 @@
                         % set the label style of the `xtick's
                         xticklabel=\day.\month.\year,
                         ]
-                        \legend{Просмоты за период (неделя)};
                         {{ range . }}
                         \addplot table [col sep=comma,x=date,y=count] {habr-csv-{{ .HabrNumber }}.csv};
+                        \addlegendentry{ {{ .HabrNumber }} }
                         {{ end }}
                     \end{axis}
                 \end{tikzpicture}
+
+                Статьи на графике:
+                \begin{itemize}
+                \setlength{\itemsep}{-2mm}
+                {{ range . }}
+                    \item {{ .HabrNumber }} --- {{ .Name }}
+                {{ end }}
+                \end{itemize}
                 {{ end }}
     \section{Системная информация}
         \subsection{Хабр}
