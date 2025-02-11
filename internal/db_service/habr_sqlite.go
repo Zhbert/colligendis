@@ -315,6 +315,7 @@ func GetArticlesFormLastPeriod(dt time.Time, getAll bool, global bool, db *gorm.
 		var stat structs.StatsArticle
 		stat.Id = i
 		stat.Name = text.CleanText(articles[i].Name)
+		stat.HabrNumber = articles[i].HabrNumber
 		stat.Date = articles[i].DateOfPublication
 		stat.Author = getAuthorByID(articles[i].Author.ID, db)
 		stat.Author.Name = text.CleanText(stat.Author.Name)

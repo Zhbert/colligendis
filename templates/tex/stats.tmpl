@@ -32,7 +32,7 @@
             \hline
             \textbf{Название статьи} & \textbf{Автор} & \textbf{Дата публикации} & \textbf{Дней назад*} & \textbf{Кол-во просмотров} \\ \hline
             {{ range .LatestArticlesFromWeek }}
-            {{ .Name }} & {{ .Author.Name }} & {{ .Date.Format "2006-01-02" }} & {{ .DayBefore }} & {{ .Growth }} \\ \hline
+            {{ .Name }} (\hyperlink{link-{{ .HabrNumber }}}{график статистики}) & {{ .Author.Name }} & {{ .Date.Format "2006-01-02" }} & {{ .DayBefore }} & {{ .Growth }} \\ \hline
             {{ end }}
             \end{tabularx}
             \notebox{\textbf{*} — с даты генерации страницы. \newline Дата генерации страницы может отличаться от даты последней загрузки статистики в БД.}
@@ -47,7 +47,7 @@
             \hline
             \textbf{Название статьи} & \textbf{Дата публикации} &  \textbf{Кол-во просмотров} \\ \hline
             {{ range .AllArticlesPerWeek }}
-            {{ .Name }} & {{ .Date.Format "2006-01-02" }} & {{ .Growth }} \\ \hline
+            {{ .Name }} (\hyperlink{link-{{ .HabrNumber }}}{график статистики}) & {{ .Date.Format "2006-01-02" }} & {{ .Growth }} \\ \hline
             {{ end }}
             \end{tabularx}
             \caption{Топ-5 популярных статей за неделю (по просмотрам)}
@@ -60,7 +60,7 @@
             \hline
             \textbf{Название статьи} & \textbf{Дата публикации} &  \textbf{Кол-во просмотров} \\ \hline
             {{ range .AllArticlesGlobalWithLimit }}
-            {{ .Name }} & {{ .Date.Format "2006-01-02" }} & {{ .Views }} \\ \hline
+            {{ .Name }} (\hyperlink{link-{{ .HabrNumber }}}{график статистики}) & {{ .Date.Format "2006-01-02" }} & {{ .Views }} \\ \hline
             {{ end }}
             \end{tabularx}
             \caption{Топ-5 популярных статей за весь период (по просмотрам)}
@@ -87,7 +87,7 @@
                  \textbf{Название статьи} & \textbf{Дата публикации} &  \textbf{Общее кол-во просмотров} & \textbf{Кол-во просмотров за неделю} \\ \hline
                  \hline \endfirsthead
                  {{ range .AllArticlesGlobal }}
-                 {{ .Name }} & {{ .Date.Format "2006-01-02" }} & {{ .Views }} & {{ .Growth }} \\ \hline
+                 {{ .Name }} (\hyperlink{link-{{ .HabrNumber }}}{график статистики}) & {{ .Date.Format "2006-01-02" }} & {{ .Views }} & {{ .Growth }} \\ \hline
                  {{ end }}
                  \caption{Все статьи в блоге}
                  \end{longtable}
@@ -161,7 +161,7 @@
                 \begin{itemize}
                 \setlength{\itemsep}{-2mm}
                 {{ range . }}
-                    \item {{ .HabrNumber }} --- {{ .Name }}
+                    \item \hypertarget{link-{{ .HabrNumber }}} --- {{ .Name }}
                 {{ end }}
                 \end{itemize}
                 {{ end }}
