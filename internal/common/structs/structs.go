@@ -47,13 +47,14 @@ type HabrArticle struct {
 }
 
 type StatsArticle struct {
-	Id        int
-	Name      string
-	Date      time.Time
-	Views     int
-	Growth    int
-	Author    domain.HabrAuthor
-	DayBefore int
+	Id         int
+	Name       string
+	HabrNumber int
+	Date       time.Time
+	Views      int
+	Growth     int
+	Author     domain.HabrAuthor
+	DayBefore  int
 }
 
 type TemplateStruct struct {
