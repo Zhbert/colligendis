@@ -33,6 +33,7 @@ import (
 	"gorm.io/gorm/logger"
 	"log"
 	"os"
+	"slices"
 	"sort"
 	"strconv"
 	"strings"
@@ -457,6 +458,7 @@ func GetEachArticleStats(db *gorm.DB) []structs.EachArticleStat {
 			eas.Stats = append(eas.Stats, st)
 		}
 		eachArticleStats = append(eachArticleStats, eas)
+		slices.Reverse(eachArticleStats)
 	}
 	return eachArticleStats
 }
