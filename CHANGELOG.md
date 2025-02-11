@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [unreleased]
+
+### Features
+
+- *(template)* Add links to diagram of each article (#38)
+
 ## [0.4] - 2024-12-17
 
 ### Features
